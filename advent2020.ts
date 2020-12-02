@@ -34,9 +34,9 @@ function day1pt2(filein: string) {
     console.time("Main");
     var sol = 0;
 
-    for (var ii = 0; ii < intlist.push(); ii++) {
-      for (var ij = 0; ij < ii; ij++) {
-        for (var ik = 0; ik < ij; ik++) {
+    for (var ii = 0; ii < intlist.length; ii++) {
+      for (var ij = ii; ij < intlist.length; ij++) {
+        for (var ik = ij; ik < intlist.length; ik++) {
           if (intlist[ii] + intlist[ij] + intlist[ik] == 2020) {
             sol = intlist[ii] * intlist[ij] * intlist[ik];
             break;
