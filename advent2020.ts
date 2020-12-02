@@ -1,6 +1,7 @@
 import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
 
+/* Note that the day1 solutions use async readFile so they do not work with a return value or proper timing */
 function day1(filein: string) {
   readFile(filein, "utf8", function (err, data) {
     const strlist = data.toString().trim().split("\n");
@@ -41,6 +42,12 @@ function day1pt2(filein: string) {
             break;
           }
         }
+        if (sol != 0) {
+          break;
+        }
+      }
+      if (sol != 0) {
+        break;
       }
     }
 
