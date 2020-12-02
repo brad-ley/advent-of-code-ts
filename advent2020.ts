@@ -105,7 +105,7 @@ function day2pt2 (filein:string) {
         if (passlist[ii][Number(rulelist[ii][0][1]) - 1] == rulelist[ii][1]){
             count++
             }
-        
+       test 
         if (count == 1){
             allowed++
         }
