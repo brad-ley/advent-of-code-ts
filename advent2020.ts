@@ -1,4 +1,4 @@
-import { readFile } from "fs";
+import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
 
 function day1 (filein:string) {
@@ -51,4 +51,69 @@ function day1pt2 (filein:string) {
 
 }
 
-day1pt2('./advent.txt');
+
+function day2 (filein:string) {
+    const str = readFileSync(filein, 'utf8')
+    const strlist = str.trim().split('\n')
+
+    const rulelist = strlist.map( x => {
+        const minilist = x.split(":")[0].split(" ") 
+        return [minilist[0].split("-").map(val => {return parseInt(val)}), minilist[1]]
+    });
+
+    const passlist = strlist.map( x => {
+        return x.split(":")[1].trim()
+    } )
+    
+    var allowed = 0
+    for (var ii=0; ii < rulelist.length; ii++){
+        var count = 0
+        for (var kk=0; kk < passlist[ii].length; kk++){
+            if (passlist[ii][kk] == rulelist[ii][1]){
+                count++
+            }
+        }
+        if (count >= rulelist[ii][0][0] && count <= rulelist[ii][0][1]){
+            allowed++
+        }
+    }
+
+    return allowed
+}
+
+
+function day2pt2 (filein:string) {
+    const str = readFileSync(filein, 'utf8')
+    const strlist = str.trim().split('\n')
+
+    const rulelist = strlist.map( x => {
+        const minilist = x.split(":")[0].split(" ") 
+        return [minilist[0].split("-").map(val => {return parseInt(val)}), minilist[1]]
+    });
+
+    const passlist = strlist.map( x => {
+        return x.split(":")[1].trim()
+    } )
+    
+    var allowed = 0
+    for (var ii=0; ii < rulelist.length; ii++){
+        var count = 0
+        if (passlist[ii][Number(rulelist[ii][0][0]) - 1] == rulelist[ii][1]){
+            count++
+            }
+        
+        if (passlist[ii][Number(rulelist[ii][0][1]) - 1] == rulelist[ii][1]){
+            count++
+            }
+        
+        if (count == 1){
+            allowed++
+        }
+    }
+
+    return allowed
+}
+
+console.time("Run time")
+console.log("Solution is: " + day2pt2('./advent.txt').toString())
+console.timeEnd("Run time")
