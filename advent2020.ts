@@ -127,6 +127,38 @@ function day2pt2(filein: string) {
   return allowed;
 }
 
+function day3(filein: string, right: number, down: number) {
+  const treerows = readFileSync(filein, "utf8").trim().split("\n");
+  var path = [...treerows];
+  var column = 0;
+  var count = 0;
+  const downloops = treerows.length / down
+  for (var i = 0; i < downloops; i ++) {
+      var idx = i * down
+    if (treerows[idx][column] == "#") {
+      count++;
+      path[idx] =
+        treerows[idx].substring(0, column) + "X" + treerows[i].substring(column + 1);
+    } else {
+      path[idx] =
+        treerows[i].substring(0, column) + "O" + treerows[i].substring(column + 1);
+    }
+    console.log(path[i], column, treerows[0].length - 1)
+    column = (column + right) % treerows[0].length
+  }
+  return count;
+}
+
+
+function day3pt2 (filein: string) { 
+    const slopes = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]]
+    var sols = 1
+    for (var i in slopes){
+        sols *= day3(filein, slopes[i][0], slopes[i][1])
+    }
+    return sols
+}
+
 console.time("Run time");
-console.log("Solution is: " + day2pt2("./advent.txt").toString());
+console.log("Solution is: " + day3pt2("./advent.txt").toString());
 console.timeEnd("Run time");
