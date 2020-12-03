@@ -127,7 +127,7 @@ function day2pt2(filein: string) {
   return allowed;
 }
 
-function day3(filein: string, right: number, down: number) {
+function day3(filein: string, right: number = 3, down: number = 1) {
   const treerows = readFileSync(filein, "utf8").trim().split("\n");
   var path = [...treerows];
   var column = 0;
@@ -143,7 +143,7 @@ function day3(filein: string, right: number, down: number) {
       path[idx] =
         treerows[i].substring(0, column) + "O" + treerows[i].substring(column + 1);
     }
-    console.log(path[i], column, treerows[0].length - 1)
+    /* console.log(path[i], column, treerows[0].length - 1) */
     column = (column + right) % treerows[0].length
   }
   return count;
