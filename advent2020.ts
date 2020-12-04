@@ -207,95 +207,83 @@ function day4pt2(filein: string) {
     if (count == 8) {
       t = 1;
     } else if (count == 7 && !row.join("").includes("cid:")) {
-        t = 1;
+      t = 1;
     }
-    
+
     if (t == 1) {
       for (var ent of row) {
-          var entlist = ent.trim().split(" ")
-          for (var entry of entlist){
-        var key = entry.trim().split(":")[0]
-        var val = entry.trim().split(":")[1]
-        if (key == "byr") {
-          if (
-            Number(val) < 1920 ||
-            Number(val) > 2002
-          ) {
-            b = 1
-            break;
-          }
-        } else if (key == "iyr") {
-          if (
-            Number(val) < 2010 ||
-            Number(val) > 2020
-          ) {
-            b = 1
-            break;
-          }
-        } else if (key == "eyr") {
-          if (
-            Number(val) < 2020 ||
-            Number(val) > 2030
-          ) {
-            b = 1
-            break;
-          }
-        } else if (key == "hgt") {
-          if (val.substring(val.length - 2) == "cm") {
-            if (isNaN(Number(val.substring(0, val.length - 2)))) {
-            b = 1
-              break;
-            } else if (
-              Number(val.substring(0, val.length - 2)) < 150 ||
-              Number(val.substring(0, val.length - 2)) > 193
-            ) {
-            b = 1
+        var entlist = ent.trim().split(" ");
+        for (var entry of entlist) {
+          var key = entry.trim().split(":")[0];
+          var val = entry.trim().split(":")[1];
+          if (key == "byr") {
+            if (Number(val) < 1920 || Number(val) > 2002) {
+              b = 1;
               break;
             }
-          } else if (val.substring(val.length - 2) == "in") {
-            if (isNaN(Number(val.substring(0, val.length - 2)))) {
-            b = 1
-              break;
-            } else if (
-              Number(val.substring(0, val.length - 2)) < 59 ||
-              Number(val.substring(0, val.length - 2)) > 76
-            ) {
-            b = 1
+          } else if (key == "iyr") {
+            if (Number(val) < 2010 || Number(val) > 2020) {
+              b = 1;
               break;
             }
-          }
-          else {
-              b = 1
-              break
-          }
-        }else if (key == "hcl") {
-            let reg = new RegExp('^\#[a-f0-9]{6}$')
+          } else if (key == "eyr") {
+            if (Number(val) < 2020 || Number(val) > 2030) {
+              b = 1;
+              break;
+            }
+          } else if (key == "hgt") {
+            if (val.substring(val.length - 2) == "cm") {
+              if (isNaN(Number(val.substring(0, val.length - 2)))) {
+                b = 1;
+                break;
+              } else if (
+                Number(val.substring(0, val.length - 2)) < 150 ||
+                Number(val.substring(0, val.length - 2)) > 193
+              ) {
+                b = 1;
+                break;
+              }
+            } else if (val.substring(val.length - 2) == "in") {
+              if (isNaN(Number(val.substring(0, val.length - 2)))) {
+                b = 1;
+                break;
+              } else if (
+                Number(val.substring(0, val.length - 2)) < 59 ||
+                Number(val.substring(0, val.length - 2)) > 76
+              ) {
+                b = 1;
+                break;
+              }
+            } else {
+              b = 1;
+              break;
+            }
+          } else if (key == "hcl") {
+            let reg = new RegExp("^#[a-f0-9]{6}$");
             if (!reg.test(val)) {
-            b = 1
-                break
+              b = 1;
+              break;
             }
-
-        }else if (key == "ecl"){
-            const allowed = ['amb', 'blu','brn','gry','grn','hzl','oth']
-            if (!allowed.includes(val)){
-            b = 1
-                break
+          } else if (key == "ecl") {
+            const allowed = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
+            if (!allowed.includes(val)) {
+              b = 1;
+              break;
             }
-        }else if (key == "pid"){
-            let preg = new RegExp('^[0-9]{9}$')
-            if (!preg.test(val)){
-            b = 1
-                break
+          } else if (key == "pid") {
+            let preg = new RegExp("^[0-9]{9}$");
+            if (!preg.test(val)) {
+              b = 1;
+              break;
             }
+          }
         }
       }
+      if (b != 1) {
+        fullcount++;
+      }
     }
-  if (b!=1){
-      console.log(i + "\n")
-      fullcount++
   }
-  }}
-
 
   return fullcount;
 }
