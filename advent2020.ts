@@ -288,88 +288,97 @@ function day4pt2(filein: string) {
   return fullcount;
 }
 
-function day5 (filein:string) {
+function day5(filein: string) {
   const tix = readFileSync(filein, "utf8").trim().split("\n");
-  function parseSeat (tic:string, cf:number, cb:number, count:number, key1:string, key2:string){
-      const lett = tic[count]
-      if (count === tic.length){
-        return cf;
+  function parseSeat(
+    tic: string,
+    cf: number,
+    cb: number,
+    count: number,
+    key1: string,
+    key2: string
+  ) {
+    const lett = tic[count];
+    if (count === tic.length) {
+      return cf;
+    } else {
+      if (lett === key1) {
+        cb = math.floor((cb - cf) / 2) + cf;
+      } else if (lett === key2) {
+        cf = cb - math.floor((cb - cf) / 2);
       }
-      else {
-          if (lett === key1){
-              cb = math.floor((cb - cf) / 2) + cf
-          }
-          else if (lett === key2) {
-              cf = cb - math.floor((cb - cf) / 2)
-          }
-          count ++
-          var seat = parseSeat(tic, cf, cb, count, key1, key2)
-      }
-    return seat
+      count++;
+      var seat = parseSeat(tic, cf, cb, count, key1, key2);
+    }
+    return seat;
   }
-  var sID = 0
-  for (var tic of tix){
-      var count = 0
-      var cb = 127
-      var cf = 0
-      var cl = 0
-      var cr = 7
-      var row = 0
-      var col = 0
-      row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B")
-      col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R")
+  var sID = 0;
+  for (var tic of tix) {
+    var count = 0;
+    var cb = 127;
+    var cf = 0;
+    var cl = 0;
+    var cr = 7;
+    var row = 0;
+    var col = 0;
+    row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
+    col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
 
-      var csID = row * 8 + col
-      if (csID > sID){
-          sID = csID
-      }
+    var csID = row * 8 + col;
+    if (csID > sID) {
+      sID = csID;
+    }
   }
-  return sID
+  return sID;
 }
 
-
-function day5pt2 (filein:string) {
+function day5pt2(filein: string) {
   const tix = readFileSync(filein, "utf8").trim().split("\n");
-  function parseSeat (tic:string, cf:number, cb:number, count:number, key1:string, key2:string){
-      const lett = tic[count]
-      if (count === tic.length){
-        return cf;
+  function parseSeat(
+    tic: string,
+    cf: number,
+    cb: number,
+    count: number,
+    key1: string,
+    key2: string
+  ) {
+    const lett = tic[count];
+    if (count === tic.length) {
+      return cf;
+    } else {
+      if (lett === key1) {
+        cb = math.floor((cb - cf) / 2) + cf;
+      } else if (lett === key2) {
+        cf = cb - math.floor((cb - cf) / 2);
       }
-      else {
-          if (lett === key1){
-              cb = math.floor((cb - cf) / 2) + cf
-          }
-          else if (lett === key2) {
-              cf = cb - math.floor((cb - cf) / 2)
-          }
-          count ++
-          var seat = parseSeat(tic, cf, cb, count, key1, key2)
-      }
-    return seat
+      count++;
+      var seat = parseSeat(tic, cf, cb, count, key1, key2);
+    }
+    return seat;
   }
-  var sID = []
-  for (var tic of tix){
-      var count = 0
-      var cb = 127
-      var cf = 0
-      var cl = 0
-      var cr = 7
-      var row = 0
-      var col = 0
-      row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B")
-      col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R")
+  var sID = [];
+  for (var tic of tix) {
+    var count = 0;
+    var cb = 127;
+    var cf = 0;
+    var cl = 0;
+    var cr = 7;
+    var row = 0;
+    var col = 0;
+    row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
+    col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
 
-      var csID = row * 8 + col
-      sID.push(csID)
+    var csID = row * 8 + col;
+    sID.push(csID);
   }
-  var prevID:number = 0
-  for (var ID of sID.sort()){
-      if (ID == prevID + 2){
-          break
-      }
-    prevID = ID
+  var prevID: number = 0;
+  for (var ID of sID.sort()) {
+    if (ID == prevID + 2) {
+      break;
+    }
+    prevID = ID;
   }
-  return ID - 1
+  return ID - 1;
 }
 
 console.time("Run time");
