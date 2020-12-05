@@ -290,37 +290,20 @@ function day4pt2(filein: string) {
 
 function day5 (filein:string) {
   const tix = readFileSync(filein, "utf8").trim().split("\n");
-  function parseRow (tic:string, cf:number, cb:number, count:number){
+  function parseSeat (tic:string, cf:number, cb:number, count:number, key1:string, key2:string){
       const lett = tic[count]
       if (count === tic.length){
         return cf;
       }
       else {
-          if (lett === "F"){
+          if (lett === key1){
               cb = math.floor((cb - cf) / 2) + cf
           }
-          else if (lett === "B") {
+          else if (lett === key2) {
               cf = cb - math.floor((cb - cf) / 2)
           }
           count ++
-          var seat = parseRow(tic, cf, cb, count)
-      }
-    return seat
-  }
-  function parseCol (tic:string, cl:number, cr:number, count:number){
-      const lett = tic[count]
-      if (count === tic.length){
-        return cl;
-      }
-      else {
-          if (lett === "L"){
-              cr = math.floor((cr - cl) / 2) + cl
-          }
-          else if (lett === "R") {
-              cl = cr - math.floor((cr - cl) / 2)
-          }
-          count ++
-          var seat = parseCol(tic, cl, cr, count)
+          var seat = parseSeat(tic, cf, cb, count, key1, key2)
       }
     return seat
   }
@@ -333,8 +316,8 @@ function day5 (filein:string) {
       var cr = 7
       var row = 0
       var col = 0
-      row += parseRow(tic.substring(0, 7), cf, cb, count)
-      col += parseCol(tic.substring(7, tic.length), cl, cr, count)
+      row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B")
+      col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R")
 
       var csID = row * 8 + col
       if (csID > sID){
@@ -347,37 +330,20 @@ function day5 (filein:string) {
 
 function day5pt2 (filein:string) {
   const tix = readFileSync(filein, "utf8").trim().split("\n");
-  function parseRow (tic:string, cf:number, cb:number, count:number){
+  function parseSeat (tic:string, cf:number, cb:number, count:number, key1:string, key2:string){
       const lett = tic[count]
       if (count === tic.length){
         return cf;
       }
       else {
-          if (lett === "F"){
+          if (lett === key1){
               cb = math.floor((cb - cf) / 2) + cf
           }
-          else if (lett === "B") {
+          else if (lett === key2) {
               cf = cb - math.floor((cb - cf) / 2)
           }
           count ++
-          var seat = parseRow(tic, cf, cb, count)
-      }
-    return seat
-  }
-  function parseCol (tic:string, cl:number, cr:number, count:number){
-      const lett = tic[count]
-      if (count === tic.length){
-        return cl;
-      }
-      else {
-          if (lett === "L"){
-              cr = math.floor((cr - cl) / 2) + cl
-          }
-          else if (lett === "R") {
-              cl = cr - math.floor((cr - cl) / 2)
-          }
-          count ++
-          var seat = parseCol(tic, cl, cr, count)
+          var seat = parseSeat(tic, cf, cb, count, key1, key2)
       }
     return seat
   }
@@ -390,8 +356,8 @@ function day5pt2 (filein:string) {
       var cr = 7
       var row = 0
       var col = 0
-      row += parseRow(tic.substring(0, 7), cf, cb, count)
-      col += parseCol(tic.substring(7, tic.length), cl, cr, count)
+      row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B")
+      col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R")
 
       var csID = row * 8 + col
       sID.push(csID)
@@ -407,5 +373,5 @@ function day5pt2 (filein:string) {
 }
 
 console.time("Run time");
-console.log("Solution is: " + day5pt2("./advent.txt").toString());
+console.log("Solution is: " + day5("./advent.txt").toString());
 console.timeEnd("Run time");
