@@ -288,6 +288,124 @@ function day4pt2(filein: string) {
   return fullcount;
 }
 
+function day5 (filein:string) {
+  const tix = readFileSync(filein, "utf8").trim().split("\n");
+  function parseRow (tic:string, cf:number, cb:number, count:number){
+      const lett = tic[count]
+      if (count === tic.length){
+        return cf;
+      }
+      else {
+          if (lett === "F"){
+              cb = math.floor((cb - cf) / 2) + cf
+          }
+          else if (lett === "B") {
+              cf = cb - math.floor((cb - cf) / 2)
+          }
+          count ++
+          var seat = parseRow(tic, cf, cb, count)
+      }
+    return seat
+  }
+  function parseCol (tic:string, cl:number, cr:number, count:number){
+      const lett = tic[count]
+      if (count === tic.length){
+        return cl;
+      }
+      else {
+          if (lett === "L"){
+              cr = math.floor((cr - cl) / 2) + cl
+          }
+          else if (lett === "R") {
+              cl = cr - math.floor((cr - cl) / 2)
+          }
+          count ++
+          var seat = parseCol(tic, cl, cr, count)
+      }
+    return seat
+  }
+  var sID = 0
+  for (var tic of tix){
+      var count = 0
+      var cb = 127
+      var cf = 0
+      var cl = 0
+      var cr = 7
+      var row = 0
+      var col = 0
+      row += parseRow(tic.substring(0, 7), cf, cb, count)
+      col += parseCol(tic.substring(7, tic.length), cl, cr, count)
+
+      var csID = row * 8 + col
+      if (csID > sID){
+          sID = csID
+      }
+  }
+  return sID
+}
+
+
+function day5pt2 (filein:string) {
+  const tix = readFileSync(filein, "utf8").trim().split("\n");
+  function parseRow (tic:string, cf:number, cb:number, count:number){
+      const lett = tic[count]
+      if (count === tic.length){
+        return cf;
+      }
+      else {
+          if (lett === "F"){
+              cb = math.floor((cb - cf) / 2) + cf
+          }
+          else if (lett === "B") {
+              cf = cb - math.floor((cb - cf) / 2)
+          }
+          count ++
+          var seat = parseRow(tic, cf, cb, count)
+      }
+    return seat
+  }
+  function parseCol (tic:string, cl:number, cr:number, count:number){
+      const lett = tic[count]
+      if (count === tic.length){
+        return cl;
+      }
+      else {
+          if (lett === "L"){
+              cr = math.floor((cr - cl) / 2) + cl
+          }
+          else if (lett === "R") {
+              cl = cr - math.floor((cr - cl) / 2)
+          }
+          count ++
+          var seat = parseCol(tic, cl, cr, count)
+      }
+    return seat
+  }
+  var sID = []
+  for (var tic of tix){
+      var count = 0
+      var cb = 127
+      var cf = 0
+      var cl = 0
+      var cr = 7
+      var row = 0
+      var col = 0
+      row += parseRow(tic.substring(0, 7), cf, cb, count)
+      col += parseCol(tic.substring(7, tic.length), cl, cr, count)
+
+      var csID = row * 8 + col
+      sID.push(csID)
+  }
+  var prevID:number = 0
+  for (var ID of sID.sort()){
+      if (ID == prevID + 2){
+          break
+      }
+    prevID = ID
+  }
+  return ID - 1
+}
+
 console.time("Run time");
-console.log("Solution is: " + day4pt2("./advent.txt").toString());
+console.log("Solution is: " + day5pt2("./advent.txt").toString());
 console.timeEnd("Run time");
