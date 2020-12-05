@@ -373,7 +373,7 @@ function day5pt2(filein: string) {
   }
   var prevID: number = 0;
   for (var ID of sID.sort()) {
-    if (ID == prevID + 2) {
+    if (ID === prevID + 2) {
       break;
     }
     prevID = ID;
