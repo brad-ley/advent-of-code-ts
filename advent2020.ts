@@ -319,10 +319,8 @@ function day5(filein: string) {
     var cf = 0;
     var cl = 0;
     var cr = 7;
-    var row = 0;
-    var col = 0;
-    row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
-    col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
+    var row = parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
+    var col = parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
 
     var csID = row * 8 + col;
     if (csID > sID) {
@@ -363,10 +361,8 @@ function day5pt2(filein: string) {
     var cf = 0;
     var cl = 0;
     var cr = 7;
-    var row = 0;
-    var col = 0;
-    row += parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
-    col += parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
+    var row = parseSeat(tic.substring(0, 7), cf, cb, count, "F", "B");
+    var col = parseSeat(tic.substring(7, tic.length), cl, cr, count, "L", "R");
 
     var csID = row * 8 + col;
     sID.push(csID);
@@ -382,5 +378,6 @@ function day5pt2(filein: string) {
 }
 
 console.time("Run time");
-console.log("Solution is: " + day5("./advent.txt").toString());
+console.log("Solution is: " + day5pt2("./advent.txt").toString());
+/* console.log("Solution is: " + day5pt2("./testing.txt").toString()); */
 console.timeEnd("Run time");
