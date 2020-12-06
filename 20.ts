@@ -377,7 +377,40 @@ function day5pt2(filein: string) {
   return ID - 1;
 }
 
+function day6(filein:string) {
+  const ans = readFileSync(filein, "utf8").trim().split("\n\n");
+  var count = 0
+  for (var group of ans){
+      var set = new Set()
+      var groupl = group.split("\n").join("").split("")
+      for (var pers of groupl){
+        set.add(pers)
+      }
+      count += set.size
+  }
+  return count
+}
+
+
+function day6pt2(filein:string) {
+  const ans = readFileSync(filein, "utf8").trim().split("\n\n");
+  var count = 0
+  for (var group of ans){
+      var req = group.split("\n").length
+      /* var count = group.split("\n").join("").split("").filter(x => x==req).length */
+      var groupl = group.split("\n").join("").split("")
+      var set = new Set(groupl)
+      var arr = Array.from(set.values())
+      for (var lett of arr){
+          if (groupl.filter(x => x===lett).length === req){
+              count ++
+          }
+      }
+  }
+  return count
+}
+
+/* console.log("Solution is: " + day6pt2("./test.txt").toString()); */
 console.time("Run time");
-console.log("Solution is: " + day5pt2("./advent.txt").toString());
-/* console.log("Solution is: " + day5pt2("./testing.txt").toString()); */
+console.log("Solution is: " + day6pt2("./advent.txt").toString());
 console.timeEnd("Run time");
