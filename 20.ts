@@ -377,125 +377,135 @@ function day5pt2(filein: string) {
   return ID - 1;
 }
 
-function day6(filein:string) {
+function day6(filein: string) {
   const ans = readFileSync(filein, "utf8").trim().split("\n\n");
-  var count = 0
-  for (var group of ans){
-      var set = new Set()
-      var groupl = group.split("\n").join("").split("")
-      for (var pers of groupl){
-        set.add(pers)
-      }
-      count += set.size
+  var count = 0;
+  for (var group of ans) {
+    var set = new Set();
+    var groupl = group.split("\n").join("").split("");
+    for (var pers of groupl) {
+      set.add(pers);
+    }
+    count += set.size;
   }
-  return count
+  return count;
 }
 
-
-function day6pt2(filein:string) {
+function day6pt2(filein: string) {
   const ans = readFileSync(filein, "utf8").trim().split("\n\n");
-  var count = 0
-  for (var group of ans){
-      var req = group.split("\n").length
-      /* var count = group.split("\n").join("").split("").filter(x => x==req).length */
-      var groupl = group.split("\n").join("").split("")
-      var set = new Set(groupl)
-      var arr = Array.from(set.values())
-      for (var lett of arr){
-          if (groupl.filter(x => x===lett).length === req){
-              count ++
-          }
+  var count = 0;
+  for (var group of ans) {
+    var req = group.split("\n").length;
+    /* var count = group.split("\n").join("").split("").filter(x => x==req).length */
+    var groupl = group.split("\n").join("").split("");
+    var set = new Set(groupl);
+    var arr = Array.from(set.values());
+    for (var lett of arr) {
+      if (groupl.filter((x) => x === lett).length === req) {
+        count++;
       }
+    }
   }
-  return count
+  return count;
 }
 
-
-function day7 (filein:string) {
+function day7(filein: string) {
   const lines = readFileSync(filein, "utf8").trim().split("\n");
-  var rules = new Object()
-  var hasnum = /\d/
+  var rules = new Object();
+  var hasnum = /\d/;
   for (var rule of lines) {
-    var lis = rule.split(' bag')
-    var outer = lis[0].trim()
-    var inner = lis.slice(1, lis.length).filter(x => hasnum.test(x))
-    rules[outer] = new Array()
+    var lis = rule.split(" bag");
+    var outer = lis[0].trim();
+    var inner = lis.slice(1, lis.length).filter((x) => hasnum.test(x));
+    rules[outer] = new Array();
     for (var str of inner) {
-        var sp = str.split(" ")
-        rules[outer].push(sp.slice(sp.indexOf(str.match(/\d/)[0]), sp.indexOf(str.match(/\d/)[0]) + 3).join(" "))
+      var sp = str.split(" ");
+      rules[outer].push(
+        sp
+          .slice(
+            sp.indexOf(str.match(/\d/)[0]),
+            sp.indexOf(str.match(/\d/)[0]) + 3
+          )
+          .join(" ")
+      );
     }
   }
 
-  var mybag = 'shiny gold'
-  var possibles = new Array()
+  var mybag = "shiny gold";
+  var possibles = new Array();
 
-  function canhold (targs:string[]) :string[]{
-      var poss = new Array()
-      for (var targ of targs){
-          console.log('-----------------\n' + 'targ: ' + targ)
-          for (var bag in rules){
-              if (rules[bag].filter(x => x.includes(targ)).length){
-                  console.log('YES! ', bag, rules[bag])
-                  poss.push(bag)
-              }
-          }
-          var set = new Set(poss)
-          poss = Array.from(set)
+  function canhold(targs: string[]): string[] {
+    var poss = new Array();
+    for (var targ of targs) {
+      console.log("-----------------\n" + "targ: " + targ);
+      for (var bag in rules) {
+        if (rules[bag].filter((x) => x.includes(targ)).length) {
+          console.log("YES! ", bag, rules[bag]);
+          poss.push(bag);
+        }
       }
-      if (!poss.length) {
-          return poss
-      }
-      else{
-          var ret = poss.concat(canhold(poss))
-          var s = new Set(ret)
-          ret = Array.from(s) /* get rid of duplicates! */
-          return ret
-      }
+      var set = new Set(poss);
+      poss = Array.from(set);
+    }
+    if (!poss.length) {
+      return poss;
+    } else {
+      var ret = poss.concat(canhold(poss));
+      var s = new Set(ret);
+      ret = Array.from(s); /* get rid of duplicates! */
+      return ret;
+    }
   }
 
-  var recur = canhold([mybag])
-  return recur.length
+  var recur = canhold([mybag]);
+  return recur.length;
 }
 
-
-function day7pt2 (filein:string) {
+function day7pt2(filein: string) {
   const lines = readFileSync(filein, "utf8").trim().split("\n");
-  var rules = new Object()
-  var hasnum = /\d/
+  var rules = new Object();
+  var hasnum = /\d/;
   for (var rule of lines) {
-    var lis = rule.split(' bag')
-    var outer = lis[0].trim()
-    var inner = lis.slice(1, lis.length).filter(x => hasnum.test(x))
-    rules[outer] = new Array()
+    var lis = rule.split(" bag");
+    var outer = lis[0].trim();
+    var inner = lis.slice(1, lis.length).filter((x) => hasnum.test(x));
+    rules[outer] = new Array();
     for (var str of inner) {
-        var sp = str.split(" ")
-        rules[outer].push(sp.slice(sp.indexOf(str.match(/\d/)[0]), sp.indexOf(str.match(/\d/)[0]) + 3).join(" "))
+      var sp = str.split(" ");
+      rules[outer].push(
+        sp
+          .slice(
+            sp.indexOf(str.match(/\d/)[0]),
+            sp.indexOf(str.match(/\d/)[0]) + 3
+          )
+          .join(" ")
+      );
     }
   }
 
-  /* console.log(rules) */
-
-  var thisbag = 0
-  function musthold (targ:string, curr:number, outmult:number){
-      /* for (var sing of targ){ */
-          if (!rules[targ].length){
-              /* console.log('base case') */
-              return {inside:rules[targ], curr:curr, outmult:outmult}
-          }
-          for (var ins of rules[targ]){
-                  var newins = [ins].map(x => x.split(" ").slice(1, x.split(" ").length).join(" "))[0]
-                  var numadd = [ins].map(x => parseInt(x.match(/\d/)))[0]
-                  var curbag = numadd * outmult
-                  thisbag += curbag
-                  /* console.log(newins, numadd, outmult, thisbag) */
-                  var out = musthold(newins, curr, curbag)
-          }
-      return {inside:out.inside, curr:thisbag, outmult:out.outmult}
+  var thisbag = 0;
+  function musthold(targ: string, curr: number, outmult: number) {
+    /* for (var sing of targ){ */
+    if (!rules[targ].length) {
+      /* console.log('base case') */
+      return { inside: rules[targ], curr: curr, outmult: outmult };
     }
-    /* } */
-  var mybag = 'shiny gold'
-  var recur = musthold(mybag, 0, 1)
-  return recur.curr
+    for (var ins of rules[targ]) {
+      var newins = [ins].map((x) =>
+        x.split(" ").slice(1, x.split(" ").length).join(" ")
+      )[0];
+      var numadd = [ins].map((x) => parseInt(x.match(/\d/)))[0];
+      var curbag = numadd * outmult;
+      thisbag += curbag;
+      /* console.log(newins, numadd, outmult, thisbag) */
+      var out = musthold(newins, curr, curbag);
+    }
+    return { inside: out.inside, curr: thisbag, outmult: out.outmult };
+  }
+  /* } */
+  var mybag = "shiny gold";
+  var recur = musthold(mybag, 0, 1);
+  return recur.curr;
 }
 
 /* console.log("Solution is: " + day7pt2("./test.txt").toString()); */
