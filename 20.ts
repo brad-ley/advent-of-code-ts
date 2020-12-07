@@ -410,7 +410,73 @@ function day6pt2(filein:string) {
   return count
 }
 
-/* console.log("Solution is: " + day6pt2("./test.txt").toString()); */
+
+function day7 (filein:string) {
+  const lines = readFileSync(filein, "utf8").trim().split("\n");
+  var rules = new Object()
+  var hasnum = /\d/
+  for (var rule of lines) {
+    var lis = rule.split(' bag')
+    var outer = lis[0].trim()
+    var inner = lis.slice(1, lis.length).filter(x => hasnum.test(x))
+    rules[outer] = new Array()
+    for (var str of inner) {
+        var sp = str.split(" ")
+        rules[outer].push(sp.slice(sp.indexOf(str.match(/\d/)[0]), sp.indexOf(str.match(/\d/)[0]) + 3).join(" "))
+    }
+  }
+
+  var mybag = 'shiny gold'
+  var possibles = new Array()
+
+  function canhold (targs:string[]) :string[]{
+      var poss = new Array()
+      for (var targ of targs){
+          console.log('-----------------\n' + 'targ: ' + targ)
+          for (var bag in rules){
+              if (rules[bag].filter(x => x.includes(targ)).length){
+                  console.log('YES! ', bag, rules[bag])
+                  poss.push(bag)
+              }
+          }
+          var set = new Set(poss)
+          poss = Array.from(set)
+      }
+      if (!poss.length) {
+          return poss
+      }
+      else{
+          var ret = poss.concat(canhold(poss))
+          var s = new Set(ret)
+          ret = Array.from(s) /* get rid of duplicates! */
+          return ret
+      }
+  }
+
+  var recur = canhold([mybag])
+  return recur.length
+}
+
+
+function day7pt2 (filein:string) {
+  const lines = readFileSync(filein, "utf8").trim().split("\n");
+  var rules = new Object()
+  var hasnum = /\d/
+  for (var rule of lines) {
+    var lis = rule.split(' bag')
+    var outer = lis[0].trim()
+    var inner = lis.slice(1, lis.length).filter(x => hasnum.test(x))
+    rules[outer] = new Array()
+    for (var str of inner) {
+        var sp = str.split(" ")
+        rules[outer].push(sp.slice(sp.indexOf(str.match(/\d/)[0]), sp.indexOf(str.match(/\d/)[0]) + 3).join(" "))
+    }
+  }
+
+  var mybag = 'shiny gold'
+}
+
+/* console.log("Solution is: " + day7("./test.txt").toString()); */
 console.time("Run time");
-console.log("Solution is: " + day6pt2("./advent.txt").toString());
+console.log("Solution is: " + day7("./advent.txt").toString());
 console.timeEnd("Run time");
