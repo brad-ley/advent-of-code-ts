@@ -473,10 +473,32 @@ function day7pt2 (filein:string) {
     }
   }
 
+  /* console.log(rules) */
+
+  var thisbag = 0
+  function musthold (targ:string, curr:number, outmult:number){
+      /* for (var sing of targ){ */
+          if (!rules[targ].length){
+              /* console.log('base case') */
+              return {inside:rules[targ], curr:curr, outmult:outmult}
+          }
+          for (var ins of rules[targ]){
+                  var newins = [ins].map(x => x.split(" ").slice(1, x.split(" ").length).join(" "))[0]
+                  var numadd = [ins].map(x => parseInt(x.match(/\d/)))[0]
+                  var curbag = numadd * outmult
+                  thisbag += curbag
+                  /* console.log(newins, numadd, outmult, thisbag) */
+                  var out = musthold(newins, curr, curbag)
+          }
+      return {inside:out.inside, curr:thisbag, outmult:out.outmult}
+    }
+    /* } */
   var mybag = 'shiny gold'
+  var recur = musthold(mybag, 0, 1)
+  return recur.curr
 }
 
-/* console.log("Solution is: " + day7("./test.txt").toString()); */
+/* console.log("Solution is: " + day7pt2("./test.txt").toString()); */
 console.time("Run time");
-console.log("Solution is: " + day7("./advent.txt").toString());
+console.log("Solution is: " + day7pt2("./advent.txt").toString());
 console.timeEnd("Run time");
