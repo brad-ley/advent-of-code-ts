@@ -508,7 +508,129 @@ function day7pt2(filein: string) {
   return recur.curr;
 }
 
-/* console.log("Solution is: " + day7pt2("./test.txt").toString()); */
+function day8(filein: string) {
+  var lines = readFileSync(filein, "utf8").trim().split("\n");
+  var count = 0;
+  function nop(lines: string[], n: number) {
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    return { lines: lines, n: n + 1 };
+  }
+  function acc(lines: string[], n: number) {
+    count += parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    return { lines: lines, n: n + 1 };
+  }
+  function jmp(lines: string[], n: number) {
+    var ind = parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
+    /* console.log(ind) */
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    /* console.log(lines) */
+    return { lines: lines, n: n + ind };
+  }
+  var n = 0;
+  do {
+    /* console.log(lines, n) */
+    if (lines[n].split(" ")[0] == "nop") {
+      var out = nop(lines, n);
+      lines = out.lines;
+      n = out.n;
+    } else if (lines[n].split(" ")[0] == "acc") {
+      var out = acc(lines, n);
+      lines = out.lines;
+      n = out.n;
+    } else if (lines[n].split(" ")[0] == "jmp") {
+      var out = jmp(lines, n);
+      lines = out.lines;
+      n = out.n;
+    }
+  } while (lines[n] !== "poo");
+  return count;
+}
+
+function day8pt2(filein: string) {
+  var lines = readFileSync(filein, "utf8").trim().split("\n");
+  function nop(lines: string[], n: number, count: number) {
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    return { lines: lines, n: n + 1, c: count };
+  }
+  function acc(lines: string[], n: number, count: number) {
+    count += parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    return { lines: lines, n: n + 1, c: count };
+  }
+  function jmp(lines: string[], n: number, count: number) {
+    var ind = parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
+    /* console.log(ind) */
+    lines = lines
+      .slice(0, n)
+      .concat(["poo"])
+      .concat(lines.slice(n + 1, lines.length));
+    /* console.log(lines) */
+    return { lines: lines, n: n + ind, c: count };
+  }
+  function op(lines: string[], n: number) {
+    var count = 0;
+    var savelines = [...lines];
+    do {
+      if (lines[n].split(" ")[0] == "nop") {
+        var out = nop(lines, n, count);
+        lines = out.lines;
+        n = out.n;
+        count = out.c;
+      } else if (lines[n].split(" ")[0] == "acc") {
+        var out = acc(lines, n, count);
+        lines = out.lines;
+        n = out.n;
+        count = out.c;
+      } else if (lines[n].split(" ")[0] == "jmp") {
+        var out = jmp(lines, n, count);
+        lines = out.lines;
+        n = out.n;
+        count = out.c;
+      }
+      if (n === lines.length) {
+        break;
+      }
+    } while (lines[n] !== "poo");
+    if (n == lines.length) {
+      return { found: true, count: count };
+    } else {
+      return { found: false, count: count };
+    }
+  }
+  for (var line of lines) {
+    var newlines = [...lines];
+    var out = { found: false, count: 0 };
+    if (line.includes("nop")) {
+      newlines[lines.indexOf(line)] = line.replace("nop", "jmp");
+      out = op(newlines, 0);
+    } else if (line.includes("jmp")) {
+      newlines[lines.indexOf(line)] = line.replace("jmp", "nop");
+      out = op(newlines, 0);
+    }
+    if (out.found) {
+      break;
+    }
+  }
+  return out.count;
+}
+
+/* console.log("Solution is: " + day8pt2("./test.txt").toString()); */
 console.time("Run time");
-console.log("Solution is: " + day7pt2("./advent.txt").toString());
+console.log("Solution is: " + day8pt2("./advent.txt").toString());
 console.timeEnd("Run time");
