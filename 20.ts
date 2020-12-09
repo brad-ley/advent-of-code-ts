@@ -630,7 +630,7 @@ function day8pt2(filein: string) {
   return out.count;
 }
 
-function day9(nums:number[], search=25) {
+function day9(nums:number[], search:number=25) {
   function looper(nums: number[], search: number, ii: number) {
     for (var kk = ii - search; kk < ii; kk++) {
       for (var ll = kk; ll < ii; ll++) {
@@ -690,7 +690,7 @@ function inpfile(filein: string) {
 /* var input = inpfile("./test.txt") */
 var input = inpfile("./advent.txt")
 
-var targnum = day9(input)
+var targnum = day9(input, 25)
 console.time("Run time");
 console.log("Solution is: " + day9pt2(input, targnum).toString());
 console.timeEnd("Run time");
