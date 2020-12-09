@@ -630,14 +630,9 @@ function day8pt2(filein: string) {
   return out.count;
 }
 
-function day9(filein: string) {
-  var nums = readFileSync(filein, "utf8")
-    .trim()
-    .split("\n")
-    .map((x) => parseInt(x));
-  var prevlen = 25;
-  function looper(nums: number[], prevlen: number, ii: number) {
-    for (var kk = ii - prevlen; kk < ii; kk++) {
+function day9(nums:number[], search=25) {
+  function looper(nums: number[], search: number, ii: number) {
+    for (var kk = ii - search; kk < ii; kk++) {
       for (var ll = kk; ll < ii; ll++) {
         if (nums[kk] + nums[ll] === nums[ii]) {
           return true;
@@ -646,36 +641,56 @@ function day9(filein: string) {
     }
     return false;
   }
-  for (var ii = prevlen; ii < nums.length; ii++) {
-    if (!looper(nums, prevlen, ii)) {
+  for (var ii = search; ii < nums.length; ii++) {
+    if (!looper(nums, search, ii)) {
       return nums[ii];
     }
   }
 }
 
-function day9pt2(filein: string) {
-  var nums = readFileSync(filein, "utf8")
-    .trim()
-    .split("\n")
-    .map((x) => parseInt(x));
-  var targnum = day9(filein);
-  for (var aa = 0; aa < nums.length; aa++) {
-    var imin = aa;
-    var imax = aa + 1;
+function day9pt2(nums: number[], targnum:number) {
+    /* leaving this in here as the original solution even though the updated 
+    one is two order of magnitude faster ... */
+    /* for (var aa = 0; aa < nums.length; aa++) { */
+    /* var imin = aa; */
+    /* var imax = aa + 1; */
+    /* do { */
+    /*   var s = nums.slice(imin, imax).reduce(function (a, b) { */
+    /*     return a + b; */
+    /*   }); */
+    /*   if (s === targnum) { */
+    /*     let sols = nums.slice(imin, imax).sort(); */
+    /*     return sols[0] + sols[sols.length - 1]; */
+    /*   } */
+    /*   imax++; */
+    /* } while (s < targnum); */
+  /* } */
+/* } */
+  for (var aa = 0; aa < nums.length - 1; aa++) {
+    var ee = aa
+    var s = nums[aa]
     do {
-      var s = nums.slice(imin, imax).reduce(function (a, b) {
-        return a + b;
-      });
+        ee ++  
+        s += nums[ee]
       if (s === targnum) {
-        let sols = nums.slice(imin, imax).sort();
+        let sols = nums.slice(aa, ee).sort();
         return sols[0] + sols[sols.length - 1];
       }
-      imax++;
     } while (s < targnum);
   }
 }
 
-/* console.log("Solution is: " + day9pt2("./test.txt").toString()); */
+function inpfile(filein: string) {
+  return readFileSync(filein, "utf8")
+    .trim()
+    .split("\n")
+    .map((x) => parseInt(x));
+}
+
+/* var input = inpfile("./test.txt") */
+var input = inpfile("./advent.txt")
+
+var targnum = day9(input)
 console.time("Run time");
-console.log("Solution is: " + day9pt2("./advent.txt").toString());
+console.log("Solution is: " + day9pt2(input, targnum).toString());
 console.timeEnd("Run time");
