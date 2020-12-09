@@ -630,7 +630,7 @@ function day8pt2(filein: string) {
   return out.count;
 }
 
-function day9(nums:number[], search:number=25) {
+function day9(nums: number[], search: number = 25) {
   function looper(nums: number[], search: number, ii: number) {
     for (var kk = ii - search; kk < ii; kk++) {
       for (var ll = kk; ll < ii; ll++) {
@@ -648,30 +648,30 @@ function day9(nums:number[], search:number=25) {
   }
 }
 
-function day9pt2(nums: number[], targnum:number) {
-    /* leaving this in here as the original solution even though the updated 
+function day9pt2(nums: number[], targnum: number) {
+  /* leaving this in here as the original solution even though the updated
     one is two order of magnitude faster ... */
-    /* for (var aa = 0; aa < nums.length; aa++) { */
-    /* var imin = aa; */
-    /* var imax = aa + 1; */
-    /* do { */
-    /*   var s = nums.slice(imin, imax).reduce(function (a, b) { */
-    /*     return a + b; */
-    /*   }); */
-    /*   if (s === targnum) { */
-    /*     let sols = nums.slice(imin, imax).sort(); */
-    /*     return sols[0] + sols[sols.length - 1]; */
-    /*   } */
-    /*   imax++; */
-    /* } while (s < targnum); */
+  /* for (var aa = 0; aa < nums.length; aa++) { */
+  /* var imin = aa; */
+  /* var imax = aa + 1; */
+  /* do { */
+  /*   var s = nums.slice(imin, imax).reduce(function (a, b) { */
+  /*     return a + b; */
+  /*   }); */
+  /*   if (s === targnum) { */
+  /*     let sols = nums.slice(imin, imax).sort(); */
+  /*     return sols[0] + sols[sols.length - 1]; */
+  /*   } */
+  /*   imax++; */
+  /* } while (s < targnum); */
   /* } */
-/* } */
+  /* } */
   for (var aa = 0; aa < nums.length - 1; aa++) {
-    var ee = aa
-    var s = nums[aa]
+    var ee = aa;
+    var s = nums[aa];
     do {
-        ee ++  
-        s += nums[ee]
+      ee++;
+      s += nums[ee];
       if (s === targnum) {
         let sols = nums.slice(aa, ee).sort();
         return sols[0] + sols[sols.length - 1];
@@ -688,9 +688,9 @@ function inpfile(filein: string) {
 }
 
 /* var input = inpfile("./test.txt") */
-var input = inpfile("./advent.txt")
+var input = inpfile("./advent.txt");
 
-var targnum = day9(input, 25)
+var targnum = day9(input, 25);
 console.time("Run time");
 console.log("Solution is: " + day9pt2(input, targnum).toString());
 console.timeEnd("Run time");
