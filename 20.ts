@@ -630,7 +630,52 @@ function day8pt2(filein: string) {
   return out.count;
 }
 
-/* console.log("Solution is: " + day8pt2("./test.txt").toString()); */
+function day9(filein: string) {
+  var nums = readFileSync(filein, "utf8")
+    .trim()
+    .split("\n")
+    .map((x) => parseInt(x));
+  var prevlen = 25;
+  function looper(nums: number[], prevlen: number, ii: number) {
+    for (var kk = ii - prevlen; kk < ii; kk++) {
+      for (var ll = kk; ll < ii; ll++) {
+        if (nums[kk] + nums[ll] === nums[ii]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  for (var ii = prevlen; ii < nums.length; ii++) {
+    if (!looper(nums, prevlen, ii)) {
+      return nums[ii];
+    }
+  }
+}
+
+function day9pt2(filein: string) {
+  var nums = readFileSync(filein, "utf8")
+    .trim()
+    .split("\n")
+    .map((x) => parseInt(x));
+  var targnum = day9(filein);
+  for (var aa = 0; aa < nums.length; aa++) {
+    var imin = aa;
+    var imax = aa + 1;
+    do {
+      var s = nums.slice(imin, imax).reduce(function (a, b) {
+        return a + b;
+      });
+      if (s === targnum) {
+        let sols = nums.slice(imin, imax).sort();
+        return sols[0] + sols[sols.length - 1];
+      }
+      imax++;
+    } while (s < targnum);
+  }
+}
+
+/* console.log("Solution is: " + day9pt2("./test.txt").toString()); */
 console.time("Run time");
-console.log("Solution is: " + day8pt2("./advent.txt").toString());
+console.log("Solution is: " + day9pt2("./advent.txt").toString());
 console.timeEnd("Run time");
