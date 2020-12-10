@@ -694,10 +694,7 @@ function day10(input: number[]) {
   diffs.push(3);
 
   var ones = diffs.filter((x) => x == 1).length;
-  var twos = diffs.filter((x) => x == 2).length;
   var threes = diffs.filter((x) => x == 3).length;
-
-  console.log(ones, twos, threes);
 
   return ones * threes;
 }
@@ -718,7 +715,6 @@ function day10pt2(input: number[]) {
     } while (i < diffs.length);
     return lcount; /* the last 1 has to stay where it is since it is already 3 away */
   }
-  function ways(input: number) {}
   var adps = input.sort((x, y) => x - y);
   var diffs = new Array(adps.length);
   diffs[0] = adps[0];
