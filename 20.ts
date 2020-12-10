@@ -586,33 +586,37 @@ function day8pt2(filein: string) {
   function op(lines: string[], n: number) {
     var count = 0;
     var savelines = [...lines];
+    var f = false;
     do {
-      if (lines[n].split(" ")[0] == "nop") {
-        var out = nop(lines, n, count);
-        lines = out.lines;
-        n = out.n;
-        count = out.c;
-      } else if (lines[n].split(" ")[0] == "acc") {
-        var out = acc(lines, n, count);
-        lines = out.lines;
-        n = out.n;
-        count = out.c;
-      } else if (lines[n].split(" ")[0] == "jmp") {
-        var out = jmp(lines, n, count);
-        lines = out.lines;
-        n = out.n;
-        count = out.c;
-      }
-      if (n === lines.length) {
+      try {
+        if (lines[n].split(" ")[0] == "nop") {
+          var out = nop(lines, n, count);
+          lines = out.lines;
+          n = out.n;
+          count = out.c;
+        } else if (lines[n].split(" ")[0] == "acc") {
+          var out = acc(lines, n, count);
+          lines = out.lines;
+          n = out.n;
+          count = out.c;
+        } else if (lines[n].split(" ")[0] == "jmp") {
+          var out = jmp(lines, n, count);
+          lines = out.lines;
+          n = out.n;
+          count = out.c;
+        }
+        /* if (n >= lines.length) { */
+        /*   break; */
+        /* } */
+      } catch {
+        /* should get to here if and only if n is larger than the array */
+        f = true;
         break;
       }
     } while (lines[n] !== "poo");
-    if (n == lines.length) {
-      return { found: true, count: count };
-    } else {
-      return { found: false, count: count };
-    }
+    return { found: f, count: count };
   }
+
   for (var line of lines) {
     var newlines = [...lines];
     var out = { found: false, count: 0 };
@@ -650,7 +654,7 @@ function day9(nums: number[], search: number = 25) {
 
 function day9pt2(nums: number[], targnum: number) {
   /* leaving this in here as the original solution even though the updated
-    one is two order of magnitude faster ... */
+    one is two orders of magnitude faster ... */
   /* for (var aa = 0; aa < nums.length; aa++) { */
   /* var imin = aa; */
   /* var imax = aa + 1; */
@@ -680,6 +684,59 @@ function day9pt2(nums: number[], targnum: number) {
   }
 }
 
+function day10(input: number[]) {
+  var adps = input.sort((x, y) => x - y);
+  var diffs = new Array(adps.length);
+  diffs[0] = adps[0];
+  for (var ii = 1; ii < adps.length; ii++) {
+    diffs[ii] = adps[ii] - adps[Number(ii) - 1];
+  }
+  diffs.push(3);
+
+  var ones = diffs.filter((x) => x == 1).length;
+  var twos = diffs.filter((x) => x == 2).length;
+  var threes = diffs.filter((x) => x == 3).length;
+
+  console.log(ones, twos, threes);
+
+  return ones * threes;
+}
+
+function day10pt2(input: number[]) {
+  function countones(diffs: number[]) {
+    var i = 0;
+    var count = 0;
+    var lcount = new Array();
+    do {
+      if (diffs[i] === 1) {
+        count++;
+      } else {
+        lcount.push(count);
+        count = 0;
+      }
+      i++;
+    } while (i < diffs.length);
+    return lcount; /* the last 1 has to stay where it is since it is already 3 away */
+  }
+  function ways(input: number) {}
+  var adps = input.sort((x, y) => x - y);
+  var diffs = new Array(adps.length);
+  diffs[0] = adps[0];
+  for (var ii = 1; ii < adps.length; ii++) {
+    diffs[ii] = adps[ii] - adps[Number(ii) - 1];
+  }
+  diffs.push(3);
+  var longones = countones(diffs);
+  const x = [0, 1, 2, 3, 4];
+  const y = [1, 1, 2, 4, 7];
+  var sol = 1;
+  for (var i of longones) {
+    sol *= y[x.indexOf(i)];
+  }
+
+  return sol;
+}
+
 function inpfile(filein: string) {
   return readFileSync(filein, "utf8")
     .trim()
@@ -690,7 +747,6 @@ function inpfile(filein: string) {
 /* var input = inpfile("./test.txt") */
 var input = inpfile("./advent.txt");
 
-var targnum = day9(input, 25);
 console.time("Run time");
-console.log("Solution is: " + day9pt2(input, targnum).toString());
+console.log("Solution is: " + day10pt2(input).toString());
 console.timeEnd("Run time");
