@@ -1,20 +1,173 @@
 import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
-
+import { clone, cloneDeep } from "lodash";
 
 function inpfile(filein: string) {
-  return readFileSync(filein, "utf8")
-    .trim()
-    .split("\n")
-    .map((x) => parseInt(x));
+  return readFileSync(filein, "utf8").trim().split("\n");
 }
 
-/* var input = inpfile("./test.txt") */
+// var input = inpfile("./test.txt");
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day10pt2(input).toString());
+console.log("Solution is: " + day11pt2(input).toString());
 console.timeEnd("Run time");
+
+function day11pt2(input: string[]) {
+  function arraysEqual(_arr1, _arr2) {
+    var fnd = false;
+    const arr1 = _arr1.map((x) => x.join(""));
+    const arr2 = _arr2.map((x) => x.join(""));
+    try {
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+          break;
+        }
+        if (i === arr1.length - 1) {
+          fnd = true;
+        }
+      }
+    } catch {
+    } finally {
+      return fnd;
+    }
+    // return fnd
+  }
+  var arr = input.map((x) => x.split(""));
+  var old = cloneDeep(arr);
+  function mapper(arr: string[][], old: string[][]) {
+    for (var ii in old) {
+      for (var kk in old[ii]) {
+        if (!(old[ii][kk] === ".")) {
+          var empcount = 0;
+          var looks = 0;
+          for (var iii = Number(ii) - 1; iii < Number(ii) + 2; iii++) {
+            for (var kkk = Number(kk) - 1; kkk < Number(kk) + 2; kkk++) {
+              if (!(iii === Number(ii) && kkk === Number(kk))) {
+                looks++;
+                var curi = Number(iii);
+                var curk = Number(kkk);
+
+                try {
+                  while (old[curi][curk] === ".") {
+                    if (curi < Number(ii)) {
+                      curi--;
+                    } else if (curi > Number(ii)) {
+                      curi++;
+                    }
+                    if (curk < Number(kk)) {
+                      curk--;
+                    } else if (curk > Number(kk)) {
+                      curk++;
+                    }
+                  }
+                } catch {} //}
+                var top = Number(curi) === -1 || Number(curi) === old.length;
+                var side =
+                  Number(curk) === -1 || Number(curk) === old[ii].length;
+                if (top || side) {
+                  empcount++;
+                } else {
+                  if (!(old[curi][curk] === "#")) {
+                    empcount++;
+                  }
+                }
+                if (empcount === 8) {
+                  arr[ii][kk] = "#";
+                }
+                if (looks === 8 && empcount <= 3) {
+                  arr[ii][kk] = "L";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return { arr: arr, old: old };
+  }
+  do {
+    var out = mapper(arr, old);
+    arr = out.arr;
+    old = cloneDeep(arr);
+    for (var r in arr) {
+    }
+  } while (!arraysEqual(out.arr, out.old));
+  var outsit = arr.map((x) => x.filter((y) => y === "#").join(""));
+  var outcount = outsit.join("").length;
+  return outcount;
+}
+
+function day11(input: string[]) {
+  function arraysEqual(_arr1, _arr2) {
+    var fnd = false;
+    const arr1 = _arr1.map((x) => x.join(""));
+    const arr2 = _arr2.map((x) => x.join(""));
+    try {
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+          break;
+        }
+        if (i === arr1.length - 1) {
+          fnd = true;
+        }
+      }
+    } catch {
+    } finally {
+      return fnd;
+    }
+    // return fnd
+  }
+  var arr = input.map((x) => x.split(""));
+  var old = cloneDeep(arr);
+  function mapper(arr: string[][], old: string[][]) {
+    for (var ii in old) {
+      for (var kk in old[ii]) {
+        if (!(old[ii][kk] === ".")) {
+          var empcount = 0;
+          var looks = 0;
+          for (var iii = Number(ii) - 1; iii < Number(ii) + 2; iii++) {
+            for (var kkk = Number(kk) - 1; kkk < Number(kk) + 2; kkk++) {
+              if (!(iii === Number(ii) && kkk === Number(kk))) {
+                looks++;
+                // corner cases
+                var top: boolean =
+                  Number(iii) === -1 || Number(iii) === old.length;
+                var side: boolean =
+                  Number(kkk) === -1 || Number(kkk) === old[ii].length;
+                // edge cases
+                if (top || side) {
+                  empcount += 1;
+                }
+                // bulk cases
+                else {
+                  if (!(old[iii][kkk] === "#")) {
+                    empcount++;
+                  }
+                }
+                if (empcount === 8) {
+                  arr[ii][kk] = "#";
+                }
+                if (looks === 8 && empcount <= 4) {
+                  arr[ii][kk] = "L";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return { arr: arr, old: old };
+  }
+  do {
+    var out = mapper(arr, old);
+    arr = out.arr;
+    old = cloneDeep(arr);
+  } while (!arraysEqual(out.arr, out.old));
+  var outsit = arr.map((x) => x.filter((y) => y === "#").join(""));
+  var outcount = outsit.join("").length;
+  return outcount;
+}
 
 function day10(input: number[]) {
   var adps = input.sort((x, y) => x - y);
