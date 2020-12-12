@@ -10,8 +10,65 @@ function inpfile(filein: string) {
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day11pt2(input).toString());
+console.log("Solution is: " + day12pt2(input).toString());
 console.timeEnd("Run time");
+
+function day12pt2(input: string[]) {
+  function rad(deg: number) {
+    return (deg * math.pi) / 180;
+  }
+  var waypt = math.complex(10, 1);
+  var sum = math.Complex.fromPolar(0, 0);
+  for (var inst of input) {
+    var dir = inst.match(/[a-zA-z]+/g)[0];
+    var len = parseInt(inst.match(/\d+/g)[0]);
+
+    if (dir === "R") {
+      waypt = math.multiply(waypt, math.Complex.fromPolar(1, rad(-len)));
+    } else if (dir === "L") {
+      waypt = math.multiply(waypt, math.Complex.fromPolar(1, rad(len)));
+    } else if (dir === "F") {
+      sum = math.add(sum, math.multiply(len, waypt));
+    } else if (dir === "N") {
+      waypt = math.add(waypt, math.Complex.fromPolar(len, rad(90)));
+    } else if (dir === "S") {
+      waypt = math.add(waypt, math.Complex.fromPolar(len, rad(270)));
+    } else if (dir === "E") {
+      waypt = math.add(waypt, math.Complex.fromPolar(len, rad(0)));
+    } else if (dir === "W") {
+      waypt = math.add(waypt, math.Complex.fromPolar(len, rad(180)));
+    }
+  }
+  return Math.round(math.abs(sum.re) + math.abs(sum.im));
+}
+function day12(input: string[]) {
+  function rad(deg: number) {
+    return (deg * math.pi) / 180;
+  }
+  var going = math.Complex.fromPolar(1, 0);
+  var sum = math.Complex.fromPolar(0, 0);
+  for (var inst of input) {
+    var dir = inst.match(/[a-zA-z]+/g)[0];
+    var len = parseInt(inst.match(/\d+/g)[0]);
+
+    if (dir === "R") {
+      going = math.multiply(going, math.Complex.fromPolar(1, rad(-len)));
+    } else if (dir === "L") {
+      going = math.multiply(going, math.Complex.fromPolar(1, rad(len)));
+    } else if (dir === "F") {
+      sum = math.add(sum, math.multiply(len, going));
+    } else if (dir === "N") {
+      sum = math.add(sum, math.Complex.fromPolar(len, rad(90)));
+    } else if (dir === "S") {
+      sum = math.add(sum, math.Complex.fromPolar(len, rad(270)));
+    } else if (dir === "E") {
+      sum = math.add(sum, math.Complex.fromPolar(len, rad(0)));
+    } else if (dir === "W") {
+      sum = math.add(sum, math.Complex.fromPolar(len, rad(180)));
+    }
+  }
+  return math.abs(sum.re) + math.abs(sum.im);
+}
 
 function day11pt2(input: string[]) {
   function arraysEqual(_arr1, _arr2) {
@@ -90,8 +147,7 @@ function day11pt2(input: string[]) {
     var out = mapper(arr, old);
     arr = out.arr;
     old = cloneDeep(arr);
-    for (var r in arr) {
-    }
+    process.stdout.write("\r");
   } while (!arraysEqual(out.arr, out.old));
   var outsit = arr.map((x) => x.filter((y) => y === "#").join(""));
   var outcount = outsit.join("").length;
