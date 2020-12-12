@@ -41,6 +41,7 @@ function day12pt2(input: string[]) {
   }
   return Math.round(math.abs(sum.re) + math.abs(sum.im));
 }
+
 function day12(input: string[]) {
   function rad(deg: number) {
     return (deg * math.pi) / 180;
