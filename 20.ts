@@ -10,8 +10,42 @@ function inpfile(filein: string) {
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day12pt2(input).toString());
+console.log("Solution is: " + day13pt2(input).toString());
 console.timeEnd("Run time");
+
+function day13pt2(input: string[]) {
+  var time = parseInt(input[0]);
+  var raw = input[1].split(",");
+  var buses = input[1]
+    .split(",")
+    .filter((x) => Number(x))
+    .map((x) => parseInt(x));
+
+  var found = false;
+  var idx = 0;
+  var inc = 1;
+  var dt = buses.map((x) => Number(raw.indexOf(x.toString())));
+
+  for (var ii in buses) {
+    while (!((idx + dt[ii]) % buses[ii] === 0)) {
+      idx += inc;
+    }
+    inc *= buses[ii];
+  }
+  return idx;
+}
+
+function day13(input: string[]) {
+  var time = parseInt(input[0]);
+  var buses = input[1]
+    .split(",")
+    .filter((x) => Number(x))
+    .map((x) => parseInt(x));
+
+  var ans = buses.map((x) => x - (time % x));
+  var hold = cloneDeep(ans).sort((x, y) => x - y);
+  return buses[ans.indexOf(hold[0])] * hold[0];
+}
 
 function day12pt2(input: string[]) {
   function rad(deg: number) {
