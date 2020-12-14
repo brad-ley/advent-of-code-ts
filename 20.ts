@@ -478,17 +478,14 @@ function day8(filein: string) {
   }
   function jmp(lines: string[], n: number) {
     var ind = parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
-    /* console.log(ind) */
     lines = lines
       .slice(0, n)
       .concat(["poo"])
       .concat(lines.slice(n + 1, lines.length));
-    /* console.log(lines) */
     return { lines: lines, n: n + ind };
   }
   var n = 0;
   do {
-    /* console.log(lines, n) */
     if (lines[n].split(" ")[0] == "nop") {
       var out = nop(lines, n);
       lines = out.lines;
@@ -525,12 +522,10 @@ function day8pt2(filein: string) {
   }
   function jmp(lines: string[], n: number, count: number) {
     var ind = parseInt(lines[n].split(" ")[lines[n].split(" ").length - 1]);
-    /* console.log(ind) */
     lines = lines
       .slice(0, n)
       .concat(["poo"])
       .concat(lines.slice(n + 1, lines.length));
-    /* console.log(lines) */
     return { lines: lines, n: n + ind, c: count };
   }
   function op(lines: string[], n: number) {
@@ -555,9 +550,6 @@ function day8pt2(filein: string) {
           n = out.n;
           count = out.c;
         }
-        /* if (n >= lines.length) { */
-        /*   break; */
-        /* } */
       } catch {
         /* should get to here if and only if n is larger than the array */
         f = true;
@@ -660,9 +652,7 @@ function day7pt2(filein: string) {
 
   var thisbag = 0;
   function musthold(targ: string, curr: number, outmult: number) {
-    /* for (var sing of targ){ */
     if (!rules[targ].length) {
-      /* console.log('base case') */
       return { inside: rules[targ], curr: curr, outmult: outmult };
     }
     for (var ins of rules[targ]) {
@@ -672,12 +662,10 @@ function day7pt2(filein: string) {
       var numadd = [ins].map((x) => parseInt(x.match(/\d/)))[0];
       var curbag = numadd * outmult;
       thisbag += curbag;
-      /* console.log(newins, numadd, outmult, thisbag) */
       var out = musthold(newins, curr, curbag);
     }
     return { inside: out.inside, curr: thisbag, outmult: out.outmult };
   }
-  /* } */
   var mybag = "shiny gold";
   var recur = musthold(mybag, 0, 1);
   return recur.curr;
@@ -702,7 +690,6 @@ function day6pt2(filein: string) {
   var count = 0;
   for (var group of ans) {
     var req = group.split("\n").length;
-    /* var count = group.split("\n").join("").split("").filter(x => x==req).length */
     var groupl = group.split("\n").join("").split("");
     var set = new Set(groupl);
     var arr = Array.from(set.values());
@@ -944,7 +931,6 @@ function day3(filein: string, right: number = 3, down: number = 1) {
         "O" +
         treerows[i].substring(column + 1);
     }
-    /* console.log(path[i], column, treerows[0].length - 1) */
     column = (column + right) % treerows[0].length;
   }
   return count;
