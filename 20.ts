@@ -10,8 +10,107 @@ function inpfile(filein: string) {
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day13pt2(input).toString());
+console.log("Solution is: " + day14pt2(input).toString());
 console.timeEnd("Run time");
+
+function day14pt2(input: string[]) {
+  function retall(add: string, idx: number, choices: string[]) {
+    var hold = cloneDeep(add).split("");
+    var num = 2 ** add.split("").filter((x) => x === "X").length;
+    if (choices.length === num) {
+      return { add: add, idx: idx, choices: choices };
+    }
+    var newchoices = cloneDeep(choices);
+    for (var choice of choices) {
+      var chs = cloneDeep(choice).split("");
+      var idxn = cloneDeep(chs).slice(idx).indexOf("X");
+      chs[idx + idxn] = "0";
+      newchoices[choices.indexOf(choice)] = chs.join("");
+      chs[idx + idxn] = "1";
+      newchoices.push(chs.join(""));
+    }
+    out = retall(add, idxn + 1, newchoices);
+    return { add: out.add, idx: out.idx, choices: out.choices };
+  }
+  var mem = new Object();
+  for (var row of input) {
+    if (row.match(/^mask/)) {
+      var mask = row.match(/[X\d]+/)[0];
+    } else if (row.match(/^mem/)) {
+      var idx = parseInt(
+        row
+          .match(/\[\d+\]/)[0]
+          .replace("[", "")
+          .replace("]", "")
+      );
+      var val = parseInt(row.split("=")[1]);
+      var add = idx.toString(2);
+      add = add.padStart(36, "0");
+      var res = "0".repeat(36).split("");
+      for (var ii in add.split("")) {
+        if (mask[ii] === "0") {
+          res[ii] = add[ii];
+        } else {
+          res[ii] = mask[ii];
+        }
+      }
+      var out = retall(res.join(""), 0, [res.join("")]);
+      var mems = out.choices.map((x) => parseInt(x, 2));
+      for (var m of mems.sort((x, y) => x - y)) {
+        mem[m] = val;
+      }
+    }
+  }
+
+  var tot = 0;
+  for (const m in mem) {
+    tot += mem[m];
+  }
+  return tot;
+}
+
+function day14(input: string[]) {
+  var memsize = 0;
+  for (var row of input) {
+    if (row.match(/\[\d+\]/)) {
+      var dat = row
+        .match(/\[\d+\]/)[0]
+        .replace("[", "")
+        .replace("]", "");
+      if (parseInt(dat) > memsize) {
+        memsize = parseInt(dat);
+      }
+    }
+  }
+  var mem = new Array(memsize);
+  for (var row of input) {
+    if (row.match(/^mask/)) {
+      var mask = row.match(/[X\d]+/)[0];
+    }
+    if (row.match(/^mem/)) {
+      var idx = parseInt(
+        row
+          .match(/\[\d+\]/)[0]
+          .replace("[", "")
+          .replace("]", "")
+      );
+      var val = parseInt(row.split("=")[row.split("=").length - 1]).toString(2);
+      val = val.padStart(36, "0");
+      var res = "0".repeat(36).split("");
+      for (var ii in val.split("")) {
+        if (mask[ii] === "X") {
+          res[ii] = val[ii];
+        } else {
+          res[ii] = mask[ii];
+        }
+      }
+      mem[idx] = parseInt(res.join(""), 2);
+    }
+  }
+  return mem.reduce(function (a, b) {
+    return a + b;
+  });
+}
 
 function day13pt2(input: string[]) {
   var time = parseInt(input[0]);
