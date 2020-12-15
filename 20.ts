@@ -10,8 +10,59 @@ function inpfile(filein: string) {
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day14pt2(input).toString());
+console.log("Solution is: " + day15pt2(input).toString());
 console.timeEnd("Run time");
+
+function day15pt2(input: string[]) {
+  var nums = input[0].split(",").map((x) => parseInt(x));
+  var my = {};
+  for (const num of nums.slice(0, nums.length - 1)) {
+    my[num] = nums.indexOf(num)
+  }
+  var c = 0;
+  for (var i in my) {
+    c += 1
+  }
+  var num = nums[nums.length - 1];
+  var end = 30000000
+  // var end = 2020
+  // var end = 11
+  while (c < end) {
+    if (my.hasOwnProperty(num)) {
+      var temp = cloneDeep(num)
+      num = c - my[num]
+      my[temp] = c
+    }
+    else {
+      my[num] = c
+      num = 0
+    }
+    c++;
+    if (c === end - 1) {
+      return num;
+    }
+    if (c % 500000 === 0) {
+      console.log("Done %d of %d", c, 30000000);
+    }
+  }
+}
+
+function day15(input: string[]) {
+  var nums = input[0].split(",").map((x) => parseInt(x));
+  while (nums.length < 2020) {
+    // while (nums.length < 10){
+    if (nums.filter((x) => x === nums[nums.length - 1]).length > 1) {
+      // want to search backwards
+      var nr = nums.slice(0, nums.length - 1).reverse();
+      nums.push(
+        nums.length - 1 - (nr.length - 1 - nr.indexOf(nums[nums.length - 1]))
+      );
+    } else {
+      nums.push(0);
+    }
+  }
+  return nums[nums.length - 1];
+}
 
 function day14pt2(input: string[]) {
   function retall(add: string, idx: number, choices: string[]) {
