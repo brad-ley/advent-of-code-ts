@@ -3,39 +3,172 @@ import * as math from "mathjs";
 import { clone, cloneDeep } from "lodash";
 
 function inpfile(filein: string) {
-  return readFileSync(filein, "utf8").trim().split("\n");
+  return readFileSync(filein, "utf8").trim().split("\n\n");
 }
 
 // var input = inpfile("./test.txt");
 var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day15pt2(input).toString());
+console.log("Solution is: " + day16pt2(input).toString());
 console.timeEnd("Run time");
+
+function day16pt2(input: string[]) {
+  var rules = input[0].split("\n");
+  var my = input[1]
+    .split(":")[1]
+    .trim()
+    .split(",")
+    .map((x) => parseInt(x));
+  var others: number[][] = input[2]
+    .split(":")[1]
+    .trim()
+    .split("\n")
+    .map((x) => x.split(",").map((y) => parseInt(y)));
+  var ruleob = new Object();
+  for (const line of rules) {
+    ruleob[line.split(":")[0]] = line
+      .split(":")[1]
+      .match(/[0-9]+-[0-9]+/gm)
+      .map((x) =>
+        x
+          .split("-")
+          .map((x) => parseInt(x))
+          .sort((x, y) => x - y)
+      );
+  }
+  var noton = [];
+  for (const tic of others) {
+    for (const n of tic) {
+      var found = false;
+      for (const i in ruleob) {
+        if (
+          (n >= ruleob[i][0][0] && n <= ruleob[i][0][1]) ||
+          (n >= ruleob[i][1][0] && n <= ruleob[i][1][1])
+        ) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        noton.push(tic);
+        break;
+      }
+    }
+  }
+  others = others.filter((x) => !noton.includes(x))
+  var satisfy = new Object();
+  for (var r in ruleob) {
+    satisfy[r] = []
+    for (var n = 0; n < others[0].length; n++) {
+      for (var row of others) {
+        if (!(
+            (row[n] >= ruleob[r][0][0] && row[n] <= ruleob[r][0][1]) ||
+            (row[n] >= ruleob[r][1][0] && row[n] <= ruleob[r][1][1])
+            )) { break }
+        if (row === others[others.length - 1]){
+          satisfy[r].push(n);
+        }
+      }
+    }
+  }
+  var count = 0;
+  var metlist = Object.keys(satisfy)
+  while (count < rules.length - 1) {
+    for (const ii of metlist) {
+      if (satisfy[ii].length === 1) {
+        for (const kk in satisfy) {
+          if (kk !== ii) {
+            if (satisfy[kk].includes(satisfy[ii][0])) {
+              satisfy[kk] = satisfy[kk].filter(x => x !== satisfy[ii][0])
+            }
+          }
+        }
+        count ++
+        metlist = metlist.filter(x => x !== ii)
+        break;
+      }
+    }
+  }
+  var myticket = new Object();
+  for (const ii in satisfy) {
+    myticket[ii] = my[satisfy[ii][0]];
+  }
+  var sol = 1;
+  for (const ii in myticket) {
+    if (ii.startsWith("departure")) sol *= myticket[ii];
+  }
+  return sol;
+}
+
+function day16(input: string[]) {
+  var rules = input[0].split("\n");
+  var my = input[1]
+    .split(":")[1]
+    .trim()
+    .split(",")
+    .map((x) => parseInt(x));
+  var others: number[][] = input[2]
+    .split(":")[1]
+    .trim()
+    .split("\n")
+    .map((x) => x.split(",").map((y) => parseInt(y)));
+  var ruleob = new Object();
+  for (const line of rules) {
+    ruleob[line.split(":")[0]] = line
+      .split(":")[1]
+      .match(/[0-9]+-[0-9]+/gm)
+      .map((x) =>
+        x
+          .split("-")
+          .map((x) => parseInt(x))
+          .sort((x, y) => x - y)
+      );
+  }
+  var rate = 0;
+  for (const tic of others) {
+    for (const n of tic) {
+      var found = false;
+      for (const i in ruleob) {
+        if (
+          (n >= ruleob[i][0][0] && n <= ruleob[i][0][1]) ||
+          (n >= ruleob[i][1][0] && n <= ruleob[i][1][1])
+        ) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        console.log(others.indexOf(tic))
+        rate += n;
+      }
+    }
+  }
+  return rate;
+}
 
 function day15pt2(input: string[]) {
   var nums = input[0].split(",").map((x) => parseInt(x));
   var my = {};
   for (const num of nums.slice(0, nums.length - 1)) {
-    my[num] = nums.indexOf(num)
+    my[num] = nums.indexOf(num);
   }
   var c = 0;
   for (var i in my) {
-    c += 1
+    c += 1;
   }
   var num = nums[nums.length - 1];
-  var end = 30000000
+  var end = 30000000;
   // var end = 2020
   // var end = 11
   while (c < end) {
     if (my.hasOwnProperty(num)) {
-      var temp = cloneDeep(num)
-      num = c - my[num]
-      my[temp] = c
-    }
-    else {
-      my[num] = c
-      num = 0
+      var temp = cloneDeep(num);
+      num = c - my[num];
+      my[temp] = c;
+    } else {
+      my[num] = c;
+      num = 0;
     }
     c++;
     if (c === end - 1) {
