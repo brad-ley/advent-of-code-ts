@@ -1,17 +1,383 @@
 import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
 import { clone, cloneDeep } from "lodash";
+import { matchRecursive } from "xregexp";
 
 function inpfile(filein: string) {
   return readFileSync(filein, "utf8").trim().split("\n\n");
 }
 
-// var input = inpfile("./test.txt");
-var input = inpfile("./advent.txt");
+var input = inpfile("./test.txt");
+// var input = inpfile("./advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day16pt2(input).toString());
+console.log("Solution is: " + day19(input).toString());
 console.timeEnd("Run time");
+
+function day19(input: string[]) {
+  var rules = input[0].split("\n");
+  var mess = input[1].split("\n");
+  var rulob = new Object();
+  for (var r of rules) {
+    rulob[parseInt(r.split(":")[0])] = r.split(":")[1].trim();
+  }
+  function check(w: string, r: string, bool: boolean[]) {
+    for (var ii of rulob[r].split("|")) {
+      console.log(ii);
+      if (!/\d+/gm.test(rulob[r])) {
+        // console.log(r.match(/[a-z]+/gm))
+        if (w.includes(r.match(/[a-z]+/gm)[0])) {
+          console.log("here");
+          return { w: w, r: r, bool: true };
+        } else {
+          return { w: w, r: r, bool: false };
+        }
+      }
+      // console.log(ii, ii.match(/\d+/gm))
+      for (var kk of ii.match(/\d+/gm)) {
+        // console.log(kk)
+        var out = check(w, kk, bool);
+        bool.push(out.bool);
+      }
+    }
+    return out;
+  }
+  var sum = 0;
+  for (const w of mess) {
+    console.log(check(w, "0", []));
+    // if ( check (w, '0') ){
+    // console.log(w)
+    // }
+  }
+  return 5;
+}
+
+function day18pt2(input: string[]) {
+  function getparen(arg: string, hold: object) {
+    var temp = matchRecursive(arg, "\\(", "\\)", "g");
+    if (temp.length === 0) {
+      hold[arg] = 0;
+      return { arg: arg, out: hold };
+    }
+    for (const ii of temp) {
+      getparen(ii, hold);
+    }
+    temp.push(arg);
+    return { arg: temp, out: hold };
+  }
+  function parseString(ii: string) {
+    if (/[0-9]+\+[0-9]+/gm.test(ii)) {
+      return (
+        parseInt(ii.match(/[0-9]+/gm)[0]) + parseInt(ii.match(/[0-9]+/gm)[1])
+      );
+    } else if (/[0-9]+\*[0-9]+/gm.test(ii)) {
+      return (
+        parseInt(ii.match(/[0-9]+/gm)[0]) * parseInt(ii.match(/[0-9]+/gm)[1])
+      );
+    }
+  }
+  var sum = 0;
+  for (const row of input) {
+    var calc = row.replace(/ /g, "");
+    var c = 0;
+    while (calc.includes("(")) {
+      var use = getparen(calc, {});
+      use.arg = Array.from(use.arg);
+      for (const ii in use.out) {
+        var l = ii.split("*");
+        var lis = [];
+        for (var chunk of l) {
+          while (/\*|\+/gm.test(chunk)) {
+            const val = parseString(
+              chunk.match(/[0-9]+(\*|\+)[0-9]+/gm)[0]
+            ).toString();
+            chunk =
+              val.toString() +
+              chunk.replace(chunk.match(/[0-9]+(\*|\+)[0-9]+/gm)[0], "");
+          }
+          lis.push(parseInt(chunk));
+        }
+        use.out[ii] = lis.reduce((x, y) => x * y);
+      }
+      const hold = cloneDeep(use);
+      for (const com of hold.arg) {
+        for (const sol in hold.out) {
+          if (com.includes(sol)) {
+            use.arg[hold.arg.indexOf(com)] = com.replace(
+              "(" + sol + ")",
+              use.out[sol].toString()
+            );
+          }
+        }
+      }
+      c++;
+      calc = use.arg[use.arg.length - 1];
+    }
+
+    var l = calc.split("*");
+    var lis = [];
+    for (var chunk of l) {
+      while (/\*|\+/gm.test(chunk)) {
+        const val = parseString(
+          chunk.match(/[0-9]+(\*|\+)[0-9]+/gm)[0]
+        ).toString();
+        chunk =
+          val.toString() +
+          chunk.replace(chunk.match(/[0-9]+(\*|\+)[0-9]+/gm)[0], "");
+      }
+      lis.push(parseInt(chunk));
+      calc = lis.reduce((x, y) => x * y);
+      // while (/\*|\+/gm.test(calc)) {
+      //   const val = parseString(
+      //     calc.match(/[0-9]+(\*|\+)[0-9]+/gm)[0]
+      //   ).toString();
+      //   calc =
+      //     val.toString() +
+      //     calc.replace(calc.match(/[0-9]+(\*|\+)[0-9]+/gm)[0], "");
+    }
+    sum += parseInt(calc);
+  }
+  return sum;
+}
+
+function day18(input: string[]) {
+  function getparen(arg: string, hold: object) {
+    var temp = matchRecursive(arg, "\\(", "\\)", "g");
+    if (temp.length === 0) {
+      hold[arg] = 0;
+      return { arg: arg, out: hold };
+    }
+    for (const ii of temp) {
+      getparen(ii, hold);
+    }
+    temp.push(arg);
+    return { arg: temp, out: hold };
+  }
+  function parseString(ii: string) {
+    if (/[0-9]+\+[0-9]+/gm.test(ii)) {
+      return (
+        parseInt(ii.match(/[0-9]+/gm)[0]) + parseInt(ii.match(/[0-9]+/gm)[1])
+      );
+    } else if (/[0-9]+\*[0-9]+/gm.test(ii)) {
+      return (
+        parseInt(ii.match(/[0-9]+/gm)[0]) * parseInt(ii.match(/[0-9]+/gm)[1])
+      );
+    }
+  }
+  var sum = 0;
+  for (const row of input) {
+    var calc = row.replace(/ /g, "");
+    var c = 0;
+    while (calc.includes("(")) {
+      var use = getparen(calc, {});
+      use.arg = Array.from(use.arg);
+      for (const ii in use.out) {
+        var h = ii;
+        while (/\*|\+/gm.test(h)) {
+          const val = parseString(
+            h.match(/[0-9]+(\*|\+)[0-9]+/gm)[0]
+          ).toString();
+
+          h =
+            val.toString() + h.replace(h.match(/[0-9]+(\*|\+)[0-9]+/gm)[0], "");
+        }
+        use.out[ii] = h;
+      }
+      const hold = cloneDeep(use);
+      for (const com of hold.arg) {
+        for (const sol in hold.out) {
+          if (com.includes(sol)) {
+            use.arg[hold.arg.indexOf(com)] = com.replace(
+              "(" + sol + ")",
+              use.out[sol].toString()
+            );
+          }
+        }
+      }
+      c++;
+      calc = use.arg[use.arg.length - 1];
+    }
+
+    // shit got convoluted here
+    while (/\*|\+/gm.test(calc)) {
+      const val = parseString(
+        calc.match(/[0-9]+(\*|\+)[0-9]+/gm)[0]
+      ).toString();
+
+      calc =
+        val.toString() +
+        calc.replace(calc.match(/[0-9]+(\*|\+)[0-9]+/gm)[0], "");
+    }
+    sum += parseInt(calc);
+  }
+  return sum;
+}
+
+function day17pt2(input: string[]) {
+  var vecset = new Set();
+  for (let ii = 0; ii < input.length; ii++) {
+    for (let kk = 0; kk < input[ii].length; kk++) {
+      if (input[ii][kk] === "#") {
+        vecset.add([0, 0, ii, kk]);
+      }
+    }
+  }
+  var loops = 0;
+  var size = 15;
+  var runs = 0;
+  var max = 6;
+  while (loops < max) {
+    var temp = <number[][]>Array.from(vecset.values());
+    var tstr = [];
+    // having some variable issues. Just need to get a string that is joined by
+    // commas to pass around instead of doing pass by reference
+    temp.forEach(function (x) {
+      tstr.push(x.join(","));
+    });
+    const hold = cloneDeep(tstr);
+    for (let aa = -size; aa < size; aa++) {
+      process.stdout.write(`Completed ${runs} of ${2 * size * max}`);
+      if (!(runs === 2 * size * max - 1)) {
+        process.stdout.write("\r");
+      }
+      runs++;
+      for (let bb = -size; bb < size; bb++) {
+        for (let cc = -size; cc < size; cc++) {
+          for (let dd = -size; dd < size; dd++) {
+            var count = 0;
+            for (let ii = -1; ii < 2; ii++) {
+              for (let jj = -1; jj < 2; jj++) {
+                for (let kk = -1; kk < 2; kk++) {
+                  for (let ll = -1; ll < 2; ll++) {
+                    if (!(ii === 0 && jj === 0 && kk === 0 && ll === 0)) {
+                      if (
+                        hold.includes(
+                          [aa + ii, bb + jj, cc + kk, dd + ll].join(",")
+                        )
+                      ) {
+                        count++;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            if (hold.includes([aa, bb, cc, dd].join(","))) {
+              if (!(count === 2 || count === 3)) {
+                tstr = tstr.filter((x) => x !== [aa, bb, cc, dd].join(","));
+              }
+            } else {
+              if (count === 3) {
+                tstr.push([aa, bb, cc, dd].join(","));
+              }
+            }
+          }
+        }
+      }
+    }
+    vecset = new Set(tstr.map((x) => x.split(",").map((y) => parseInt(y))));
+    loops++;
+  }
+  return vecset.size;
+}
+
+function day17(input: string[]) {
+  var arrsize = 50;
+  var lines = input.map((x) =>
+    (
+      ".".repeat(Math.ceil(arrsize / 2) - Math.ceil(x.length / 2)) +
+      x +
+      ".".repeat(Math.floor(arrsize / 2) - Math.floor(x.length / 2))
+    ).split("")
+  );
+  var plane: string[][] = lines;
+  while (plane.length < arrsize) {
+    plane.push(".".repeat(arrsize).split(""));
+    if (plane.length < arrsize) {
+      plane.unshift(".".repeat(arrsize).split(""));
+    }
+  }
+  var d3: string[][][] = [lines];
+  var emplane = new Array(plane.length);
+  for (var i = 0; i < arrsize; i++) {
+    emplane[i] = [];
+    for (var k = 0; k < arrsize; k++) {
+      emplane[i][k] = ".";
+    }
+  }
+  while (d3.length < arrsize) {
+    d3.push(cloneDeep(emplane));
+    if (d3.length < arrsize) {
+      d3.unshift(cloneDeep(emplane));
+    }
+  }
+
+  var loops = 0;
+  while (loops < 6) {
+    // while (loops < 1){
+    var hold = cloneDeep(d3);
+    for (var ii = 0; ii < arrsize; ii++) {
+      for (var kk = 0; kk < arrsize; kk++) {
+        for (var ll = 0; ll < arrsize; ll++) {
+          for (var oo = 0; oo < arrsize; oo++) {
+            var count = 0;
+            if (hold[ii][kk][ll] === "#") {
+              for (var aa = ii - 1; aa < ii + 2; aa++) {
+                for (var bb = kk - 1; bb < kk + 2; bb++) {
+                  for (var cc = ll - 1; cc < ll + 2; cc++) {
+                    for (var dd = oo - 1; dd < oo + 2; dd++) {
+                      if (
+                        !(ii === aa && kk === bb && ll === cc) &&
+                        !(aa === -1 || bb === -1 || cc === -1) &&
+                        !(aa === arrsize || bb === arrsize || cc === arrsize)
+                      ) {
+                        if (hold[aa][bb][cc] === "#") {
+                          count++;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              if (!(count === 3 || count === 2)) {
+                d3[ii][kk][ll] = ".";
+              }
+            } else if (hold[ii][kk][ll] === ".") {
+              for (var aa = ii - 1; aa < ii + 2; aa++) {
+                for (var bb = kk - 1; bb < kk + 2; bb++) {
+                  for (var cc = ll - 1; cc < ll + 2; cc++) {
+                    if (
+                      !(ii === aa && kk === bb && ll === cc) &&
+                      !(aa === -1 || bb === -1 || cc === -1) &&
+                      !(aa === arrsize || bb === arrsize || cc === arrsize)
+                    ) {
+                      if (hold[aa][bb][cc] === "#") {
+                        count++;
+                      }
+                    }
+                  }
+                }
+              }
+              if (count === 3) {
+                d3[ii][kk][ll] = "#";
+              }
+            } else {
+              console.log("Something broke! I got %s", d3[ii][kk][ll]);
+            }
+          }
+        }
+      }
+    }
+    loops++;
+  }
+  // console.log(d3.map(x => x.map(x => x.join("")).join("\n")).join("\n--------------\n"))
+  var sol = d3
+    .map((e) =>
+      e.map((y) => y.filter((a) => a !== ".").length).reduce((k, l) => k + l)
+    )
+    .reduce((x, y) => x + y);
+  return sol;
+}
 
 function day16pt2(input: string[]) {
   var rules = input[0].split("\n");
@@ -56,36 +422,40 @@ function day16pt2(input: string[]) {
       }
     }
   }
-  others = others.filter((x) => !noton.includes(x))
+  others = others.filter((x) => !noton.includes(x));
   var satisfy = new Object();
   for (var r in ruleob) {
-    satisfy[r] = []
+    satisfy[r] = [];
     for (var n = 0; n < others[0].length; n++) {
       for (var row of others) {
-        if (!(
+        if (
+          !(
             (row[n] >= ruleob[r][0][0] && row[n] <= ruleob[r][0][1]) ||
             (row[n] >= ruleob[r][1][0] && row[n] <= ruleob[r][1][1])
-            )) { break }
-        if (row === others[others.length - 1]){
+          )
+        ) {
+          break;
+        }
+        if (row === others[others.length - 1]) {
           satisfy[r].push(n);
         }
       }
     }
   }
   var count = 0;
-  var metlist = Object.keys(satisfy)
+  var metlist = Object.keys(satisfy);
   while (count < rules.length - 1) {
     for (const ii of metlist) {
       if (satisfy[ii].length === 1) {
         for (const kk in satisfy) {
           if (kk !== ii) {
             if (satisfy[kk].includes(satisfy[ii][0])) {
-              satisfy[kk] = satisfy[kk].filter(x => x !== satisfy[ii][0])
+              satisfy[kk] = satisfy[kk].filter((x) => x !== satisfy[ii][0]);
             }
           }
         }
-        count ++
-        metlist = metlist.filter(x => x !== ii)
+        count++;
+        metlist = metlist.filter((x) => x !== ii);
         break;
       }
     }
@@ -139,7 +509,6 @@ function day16(input: string[]) {
         }
       }
       if (!found) {
-        console.log(others.indexOf(tic))
         rate += n;
       }
     }
