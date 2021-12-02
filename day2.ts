@@ -7,8 +7,8 @@ function inpfile(filein: string) {
   return readFileSync(filein, "utf8").trim().split("\n\n");
 }
 
-// var input = inpfile("./test.txt");
-var input = inpfile("./advent.txt");
+// var input = inpfile("./other/test.txt");
+var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
 console.log("Solution is: " + day2pt2(input).toString());
