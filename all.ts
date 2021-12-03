@@ -14,31 +14,32 @@ console.time("Run time");
 console.log("Solution is: " + day3pt2(input).toString());
 console.timeEnd("Run time");
 
-function day3pt2(input: string[]){
+function day3pt2(input: string[]) {
   var bs = input[0].split("\n");
-  var bd = cloneDeep(bs)
+  var bd = cloneDeep(bs);
 
-  function reduce (bs: string[], targ: number){
+  function reduce(bs: string[], targ: number) {
     // targ 0 means find least common, targ 1 means find most common
     // tiebreakers are set to follow AOC rules in else statement
-    var i = 0
-    while (bs.length > 1){
-      var c = 0
+    var i = 0;
+    while (bs.length > 1) {
+      var c = 0;
       for (const b of bs) {
         if (b[i] === "1") {
-          c ++;
-        }}
-      if (c < bs.length / 2) {
-        var search = (targ^1).toString()
-      }else{
-        var search = (targ).toString()
+          c++;
+        }
       }
-      bs = bs.filter(x => x.split("")[i] === search)
-      i ++
+      if (c < bs.length / 2) {
+        var search = (targ ^ 1).toString();
+      } else {
+        var search = targ.toString();
+      }
+      bs = bs.filter((x) => x.split("")[i] === search);
+      i++;
     }
-    return parseInt(bs[0], 2)
+    return parseInt(bs[0], 2);
   }
-  return reduce(bs, 1) * reduce(bd, 0)
+  return reduce(bs, 1) * reduce(bd, 0);
 }
 
 function day3(input: string[]) {
@@ -57,7 +58,7 @@ function day3(input: string[]) {
       outstr += "0";
     }
   }
-  function flip (outstr: string){
+  function flip(outstr: string) {
     var outinv = "";
     for (var bit of outstr) {
       if (bit == "1") {
@@ -66,9 +67,9 @@ function day3(input: string[]) {
         outinv += "1";
       }
     }
-    return outinv
+    return outinv;
   }
-  var outinv = flip(outstr)
+  var outinv = flip(outstr);
   return parseInt(outstr, 2) * parseInt(outinv, 2);
 }
 
