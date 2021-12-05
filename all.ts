@@ -14,52 +14,78 @@ console.time("Run time");
 console.log("Solution is: " + day5pt2(input).toString());
 console.timeEnd("Run time");
 
-function day5pt2(input: string[]){
-  input = input[0].split("\n")
-  var p1 = input.map(x => x.split(" -> ")[0].trim().split(",").map(y => parseInt(y)))
-  var p2 = input.map(x => x.split(" -> ")[1].trim().split(",").map(y => parseInt(y)))
-  var pts = new Array()
-  for (var ii=0; ii<p1.length; ii++){
-    console.log(p1[ii], p2[ii])
-    var dx = p2[ii][0] - p1[ii][0]
-    var dy = p2[ii][1] - p1[ii][1]
-    var d = Math.max(Math.abs(dx), Math.abs(dy))
-    for (var kk=0; Math.abs(kk)<=Math.abs(d); kk+=Math.sign(d)){
-      pts.push([p1[ii][0]+Math.abs(kk)*Math.sign(dx), p1[ii][1]+Math.abs(kk)*Math.sign(dy)])
-  }
+function day5pt2(input: string[]) {
+  input = input[0].split("\n");
+  var p1 = input.map((x) =>
+    x
+      .split(" -> ")[0]
+      .trim()
+      .split(",")
+      .map((y) => parseInt(y))
+  );
+  var p2 = input.map((x) =>
+    x
+      .split(" -> ")[1]
+      .trim()
+      .split(",")
+      .map((y) => parseInt(y))
+  );
+  var pts = new Array();
+  for (var ii = 0; ii < p1.length; ii++) {
+    var dx = p2[ii][0] - p1[ii][0];
+    var dy = p2[ii][1] - p1[ii][1];
+    var d = Math.max(Math.abs(dx), Math.abs(dy));
+    for (var kk = 0; Math.abs(kk) <= Math.abs(d); kk += Math.sign(d)) {
+      pts.push([
+        p1[ii][0] + Math.abs(kk) * Math.sign(dx),
+        p1[ii][1] + Math.abs(kk) * Math.sign(dy),
+      ]);
+    }
   }
   var counts = {};
   pts.forEach((el) => {
     counts[el] = counts[el] ? (counts[el] += 1) : 1;
   });
-  return Object.entries(counts).filter(x => x[1] > 1).length
+  return Object.entries(counts).filter((x) => x[1] > 1).length;
 }
 
-function day5(input: string[]){
-  input = input[0].split("\n")
-  var p1 = input.map(x => x.split(" -> ")[0].trim().split(",").map(y => parseInt(y)))
-  var p2 = input.map(x => x.split(" -> ")[1].trim().split(",").map(y => parseInt(y)))
-  var straightpts = new Array()
-  for (var ii=0; ii<p1.length; ii++){
-    if (p1[ii][0] === p2[ii][0]){
-      var start = Math.min(p1[ii][1], p2[ii][1])
-      var stop = Math.max(p1[ii][1], p2[ii][1])
-      for (var kk=start; kk<=stop; kk++) {
-        straightpts.push([p1[ii][0], kk])
+function day5(input: string[]) {
+  input = input[0].split("\n");
+  var p1 = input.map((x) =>
+    x
+      .split(" -> ")[0]
+      .trim()
+      .split(",")
+      .map((y) => parseInt(y))
+  );
+  var p2 = input.map((x) =>
+    x
+      .split(" -> ")[1]
+      .trim()
+      .split(",")
+      .map((y) => parseInt(y))
+  );
+  var straightpts = new Array();
+  for (var ii = 0; ii < p1.length; ii++) {
+    if (p1[ii][0] === p2[ii][0]) {
+      var start = Math.min(p1[ii][1], p2[ii][1]);
+      var stop = Math.max(p1[ii][1], p2[ii][1]);
+      for (var kk = start; kk <= stop; kk++) {
+        straightpts.push([p1[ii][0], kk]);
       }
-    } else if 
-      (p1[ii][1] === p2[ii][1]){
-      var start = Math.min(p1[ii][0], p2[ii][0])
-      var stop = Math.max(p1[ii][0], p2[ii][0])
-      for (var kk=start; kk<=stop; kk++) {
-        straightpts.push([kk, p1[ii][1]])
+    } else if (p1[ii][1] === p2[ii][1]) {
+      var start = Math.min(p1[ii][0], p2[ii][0]);
+      var stop = Math.max(p1[ii][0], p2[ii][0]);
+      for (var kk = start; kk <= stop; kk++) {
+        straightpts.push([kk, p1[ii][1]]);
+      }
     }
-  }}
+  }
   var counts = {};
   straightpts.forEach((el) => {
     counts[el] = counts[el] ? (counts[el] += 1) : 1;
   });
-  return Object.entries(counts).filter(x => x[1] > 1).length
+  return Object.entries(counts).filter((x) => x[1] > 1).length;
 }
 
 function day4pt2(input) {
@@ -73,16 +99,16 @@ function day4pt2(input) {
       .filter((y) => y)
       .map((y) => y.trim())
   );
-  var foundboards = new Array(boards.length)
+  var foundboards = new Array(boards.length);
   for (let v of vals) {
     for (let b of boards) {
-      var found = false
-      var spot = b.indexOf(v)
+      var found = false;
+      var spot = b.indexOf(v);
       if (spot > -1) {
         b[b.indexOf(v)] = parseInt(v);
 
         var row = Math.floor(spot / 5);
-        var rowcheck = range(5*row, 5 * (row + 1));
+        var rowcheck = range(5 * row, 5 * (row + 1));
         var col = spot - 5 * row;
         var colcheck = range(col, col + 25, 5);
         // if (boards.indexOf(b) == 2) {
@@ -110,18 +136,22 @@ function day4pt2(input) {
           found = true;
         }
       }
-      if ( found ) {
-        if (boards.length === 1){
-          return b.filter(x => typeof(x) === "string").reduce((x,y) => parseInt(x) + parseInt(y)) * parseInt(v)
-        }else{
-          foundboards.push(b)
+      if (found) {
+        if (boards.length === 1) {
+          return (
+            b
+              .filter((x) => typeof x === "string")
+              .reduce((x, y) => parseInt(x) + parseInt(y)) * parseInt(v)
+          );
+        } else {
+          foundboards.push(b);
         }
       }
     }
-    for (var f of foundboards){
-      var foundwhere = boards.indexOf(f)
-      if (foundwhere > -1){
-        boards = boards.filter(x => x !== f)
+    for (var f of foundboards) {
+      var foundwhere = boards.indexOf(f);
+      if (foundwhere > -1) {
+        boards = boards.filter((x) => x !== f);
       }
     }
   }
@@ -140,12 +170,12 @@ function day4(input) {
   );
   for (let v of vals) {
     for (let b of boards) {
-      var spot = b.indexOf(v)
+      var spot = b.indexOf(v);
       if (spot > -1) {
         b[b.indexOf(v)] = parseInt(v);
 
         var row = Math.floor(spot / 5);
-        var rowcheck = range(5*row, 5 * (row + 1));
+        var rowcheck = range(5 * row, 5 * (row + 1));
         var col = spot - 5 * row;
         var colcheck = range(col, col + 25, 5);
         // if (boards.indexOf(b) == 2) {
@@ -174,7 +204,11 @@ function day4(input) {
         }
       }
       if (found) {
-        return b.filter(x => typeof(x) === "string").reduce((x,y) => parseInt(x) + parseInt(y)) * parseInt(v)
+        return (
+          b
+            .filter((x) => typeof x === "string")
+            .reduce((x, y) => parseInt(x) + parseInt(y)) * parseInt(v)
+        );
       }
     }
   }
