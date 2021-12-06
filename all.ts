@@ -2,6 +2,7 @@ import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
 import { clone, cloneDeep, range } from "lodash";
 import { matchRecursive } from "xregexp";
+import { PlotLy } from "plotly.js-dist-min";
 
 function inpfile(filein: string) {
   return readFileSync(filein, "utf8").trim().split("\n\n");
@@ -30,6 +31,7 @@ function day6pt2(input: string[]) {
     counts[el] = counts[el] ? (counts[el] += 1) : 1;
   });
   var hold = cloneDeep(counts);
+  var c = []
   // iterate
   for (let ii = 0; ii < 256; ii++) {
     r.forEach((el) => {
@@ -41,6 +43,11 @@ function day6pt2(input: string[]) {
       }
     });
     var hold = cloneDeep(counts);
+    c.push(Object.entries(counts)
+    .map((x) => x[1])
+    .reduce((acc, cur) => acc + cur));
+    var data = [range(0, c.length), c]
+    PlotLy.newPlot('mydiv', data);
   }
   return Object.entries(counts)
     .map((x) => x[1])
