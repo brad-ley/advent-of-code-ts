@@ -11,8 +11,55 @@ function inpfile(filein: string) {
 var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day5pt2(input).toString());
+console.log("Solution is: " + day6pt2(input).toString());
 console.timeEnd("Run time");
+
+function day6pt2(input: string[]) {
+  let nums = input[0]
+    .split(",")
+    .map((x) => parseInt(x.trim()))
+    .filter((x) => x);
+  const r = range(0, 9);
+  var counts: { [key: number] : number } = {};
+  r.forEach((el) => {
+    counts[el] = counts[el] ? (counts[el] += 1) : 0;
+  });
+  nums.forEach((el) => {
+    counts[el] = counts[el] ? (counts[el] += 1) : 1;
+  });
+  var hold = cloneDeep(counts)
+  for (let ii = 0; ii < 256; ii++) {
+    r.forEach((el) => {
+        if (el > 0 && el != 7){
+        counts[el-1] = hold[el]}
+      else{
+        counts[6] = hold[0] + hold[7]
+        counts[8] = hold[0]
+    }});
+    var hold = cloneDeep(counts)
+  }
+  return Object.entries(counts).map(x => x[1]).reduce((x,y) => x+y);
+  // return 5
+}
+
+function day6(input: string[]) {
+  let nums = input[0]
+    .split(",")
+    .map((x) => parseInt(x.trim()))
+    .filter((x) => x);
+  for (let ii = 0; ii < 256; ii++) {
+    let N = nums.length;
+    for (let n = 0; n < N; n++) {
+      if (nums[n] !== 0) {
+        nums[n]--;
+      } else {
+        nums[n] = 6;
+        nums.push(8);
+      }
+    }
+  }
+  return nums.length;
+}
 
 function day5pt2(input: string[]) {
   input = input[0].split("\n");
