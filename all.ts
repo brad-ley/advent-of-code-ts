@@ -20,26 +20,31 @@ function day6pt2(input: string[]) {
     .map((x) => parseInt(x.trim()))
     .filter((x) => x);
   const r = range(0, 9);
-  var counts: { [key: number] : number } = {};
+  var counts: { [key: number]: number } = {};
+  // create and populate object
   r.forEach((el) => {
     counts[el] = counts[el] ? (counts[el] += 1) : 0;
   });
+  // get initial conditions
   nums.forEach((el) => {
     counts[el] = counts[el] ? (counts[el] += 1) : 1;
   });
-  var hold = cloneDeep(counts)
+  var hold = cloneDeep(counts);
+  // iterate
   for (let ii = 0; ii < 256; ii++) {
     r.forEach((el) => {
-        if (el > 0 && el != 7){
-        counts[el-1] = hold[el]}
-      else{
-        counts[6] = hold[0] + hold[7]
-        counts[8] = hold[0]
-    }});
-    var hold = cloneDeep(counts)
+      if (el > 0 && el != 7) {
+        counts[el - 1] = hold[el];
+      } else {
+        counts[6] = hold[0] + hold[7];
+        counts[8] = hold[0];
+      }
+    });
+    var hold = cloneDeep(counts);
   }
-  return Object.entries(counts).map(x => x[1]).reduce((x,y) => x+y);
-  // return 5
+  return Object.entries(counts)
+    .map((x) => x[1])
+    .reduce((acc, cur) => acc + cur);
 }
 
 function day6(input: string[]) {
