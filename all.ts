@@ -19,24 +19,22 @@ function day7pt2(input: string[]) {
   var nums = input[0].split(",").map((x) => parseInt(x.trim()));
   var i = 0;
   var steps = {};
-  var r = range(Math.max(...nums)+1);
+  var r = range(Math.max(...nums) + 1);
   r.forEach((el) =>
     el > 0
-      ? (steps[el] = range(1, el+1).reduce((acc, curr) => acc + curr))
+      ? (steps[el] = range(1, el + 1).reduce((acc, curr) => acc + curr))
       : (steps[el] = 0)
   );
-  var oldtot = steps[Math.max(...nums)] * nums.length;
+  var oldtot = steps[Math.max(...nums)] * nums.length; // initialize at max possible val
   do {
     var tot = nums
       .map((x) => steps[Math.abs(x - i)])
       .reduce((acc, curr) => acc + curr);
     if (tot < oldtot) {
       oldtot = cloneDeep(tot);
+    } else {
+      break;
     }
-    // else{
-    //   break // might be sufficient that if you find the min one way you're done
-    // }
-    console.log(oldtot, tot, i)
     i++;
   } while (i < nums.length);
   return oldtot;
