@@ -2,7 +2,7 @@ import { readFile, readFileSync } from "fs";
 import * as math from "mathjs";
 import { clone, cloneDeep, range } from "lodash";
 import { matchRecursive } from "xregexp";
-import { PlotLy } from "plotly.js-dist-min";
+import { Plotly } from "plotly.js-dist-min";
 
 function inpfile(filein: string) {
   return readFileSync(filein, "utf8").trim().split("\n\n");
@@ -12,8 +12,52 @@ function inpfile(filein: string) {
 var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day6pt2(input).toString());
+console.log("Solution is: " + day7pt2(input).toString());
 console.timeEnd("Run time");
+
+function day7pt2(input: string[]) {
+  var nums = input[0].split(",").map((x) => parseInt(x.trim()));
+  var i = 0;
+  var steps = {};
+  var r = range(Math.max(...nums)+1);
+  r.forEach((el) =>
+    el > 0
+      ? (steps[el] = range(1, el+1).reduce((acc, curr) => acc + curr))
+      : (steps[el] = 0)
+  );
+  var oldtot = steps[Math.max(...nums)] * nums.length;
+  do {
+    var tot = nums
+      .map((x) => steps[Math.abs(x - i)])
+      .reduce((acc, curr) => acc + curr);
+    if (tot < oldtot) {
+      oldtot = cloneDeep(tot);
+    }
+    // else{
+    //   break // might be sufficient that if you find the min one way you're done
+    // }
+    console.log(oldtot, tot, i)
+    i++;
+  } while (i < nums.length);
+  return oldtot;
+}
+
+function day7(input: string[]) {
+  var nums = input[0].split(",").map((x) => parseInt(x.trim()));
+  var oldtot = Math.max(...nums) * nums.length;
+  var i = 0;
+  do {
+    var tot = nums
+      .map((x) => Math.abs(x - i))
+      .reduce((acc, curr) => acc + curr);
+    console.log(tot, oldtot, i);
+    if (tot < oldtot) {
+      oldtot = cloneDeep(tot);
+    }
+    i++;
+  } while (i < nums.length);
+  return oldtot;
+}
 
 function day6pt2(input: string[]) {
   let nums = input[0]
@@ -31,7 +75,7 @@ function day6pt2(input: string[]) {
     counts[el] = counts[el] ? (counts[el] += 1) : 1;
   });
   var hold = cloneDeep(counts);
-  var c = []
+  var c = [];
   // iterate
   for (let ii = 0; ii < 256; ii++) {
     r.forEach((el) => {
@@ -43,11 +87,12 @@ function day6pt2(input: string[]) {
       }
     });
     var hold = cloneDeep(counts);
-    c.push(Object.entries(counts)
-    .map((x) => x[1])
-    .reduce((acc, cur) => acc + cur));
-    var data = [range(0, c.length), c]
-    PlotLy.newPlot('mydiv', data);
+    c.push(
+      Object.entries(counts)
+        .map((x) => x[1])
+        .reduce((acc, cur) => acc + cur)
+    );
+    var data = [range(0, c.length), c];
   }
   return Object.entries(counts)
     .map((x) => x[1])
