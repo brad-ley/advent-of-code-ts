@@ -25,9 +25,9 @@ function day8pt2(input: string[]) {
     .map((x) => x.split("|")[1])
     .map((x) => x.trim().split(" "));
   var code: { [key: number]: string } = {};
-  var res = new Array(outp.length)
-  for (var ii=0; ii<inp.length; ii++) {
-    var row = inp[ii]
+  var res = new Array(outp.length);
+  for (var ii = 0; ii < inp.length; ii++) {
+    var row = inp[ii];
     code[1] = row.filter((x) => x.length === 2).join();
     code[4] = row.filter((x) => x.length === 4).join();
     code[7] = row.filter((x) => x.length === 3).join();
@@ -51,14 +51,27 @@ function day8pt2(input: string[]) {
       .filter((x) =>
         code[4]
           .split("")
-          .map((y) => x.includes(y)).every(x => x))
+          .map((y) => x.includes(y))
+          .every((x) => x)
+      )
       .join();
-    code[0] = ninezero.filter(x => x!==code[9]).join()
-    code[3] = row.filter(x => !(Object.entries(code).map(x => x[1]).includes(x))).join()
+    code[0] = ninezero.filter((x) => x !== code[9]).join();
+    code[3] = row
+      .filter(
+        (x) =>
+          !Object.entries(code)
+            .map((x) => x[1])
+            .includes(x)
+      )
+      .join();
 
-    var edoc = {}
-    Object.entries(code).forEach(x => edoc[x[1].split("").sort().join("")] = x[0])
-    res[ii] = parseInt(outp[ii].map(x => edoc[x.split("").sort().join("")]).join(""))
+    var edoc = {};
+    Object.entries(code).forEach(
+      (x) => (edoc[x[1].split("").sort().join("")] = x[0])
+    );
+    res[ii] = parseInt(
+      outp[ii].map((x) => edoc[x.split("").sort().join("")]).join("")
+    );
   }
   return res.reduce((acc, cur) => acc + cur);
 }
