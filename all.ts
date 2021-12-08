@@ -28,10 +28,13 @@ function day8pt2(input: string[]) {
   var res = new Array(outp.length);
   for (var ii = 0; ii < inp.length; ii++) {
     var row = inp[ii];
+    // these 4 have unique lengths
     code[1] = row.filter((x) => x.length === 2).join();
     code[4] = row.filter((x) => x.length === 4).join();
     code[7] = row.filter((x) => x.length === 3).join();
     code[8] = row.filter((x) => x.length === 7).join();
+    // 2,5,6 all have only one of the two vals in 1
+    // 5 and 6 have the same, 2 has different
     var twofivesix = row.filter(
       (x) =>
         (x.includes(code[1].split("")[0]) &&
@@ -42,10 +45,13 @@ function day8pt2(input: string[]) {
     if (bool256.filter((x) => x).length > 1) {
       bool256 = bool256.map((x) => !x);
     }
+    // one true is 2
     code[2] = twofivesix[bool256.indexOf(true)];
     var fivesix = twofivesix.filter((x) => !bool256[twofivesix.indexOf(x)]);
+    // 6 has one more element than 5
     code[6] = fivesix.filter((x) => x.length === 6).join();
     code[5] = fivesix.filter((x) => x !== code[6]).join();
+    // 0 and 9 have the same num of letters but 9 contains ALL of 4
     var ninezero = row.filter((x) => x.length === 6 && x !== code[6]);
     code[9] = ninezero
       .filter((x) =>
@@ -55,7 +61,9 @@ function day8pt2(input: string[]) {
           .every((x) => x)
       )
       .join();
+    // 0 is the other one 
     code[0] = ninezero.filter((x) => x !== code[9]).join();
+    // 3 is now all that is left
     code[3] = row
       .filter(
         (x) =>
@@ -65,6 +73,7 @@ function day8pt2(input: string[]) {
       )
       .join();
 
+    // flip around the key-value pairs in code object
     var edoc = {};
     Object.entries(code).forEach(
       (x) => (edoc[x[1].split("").sort().join("")] = x[0])
