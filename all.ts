@@ -12,8 +12,67 @@ function inpfile(filein: string) {
 var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day7pt2(input).toString());
+console.log("Solution is: " + day8pt2(input).toString());
 console.timeEnd("Run time");
+
+function day8pt2(input: string[]) {
+  var inp = input[0]
+    .split("\n")
+    .map((x) => x.split("|")[0])
+    .map((x) => x.trim().split(" "));
+  var outp = input[0]
+    .split("\n")
+    .map((x) => x.split("|")[1])
+    .map((x) => x.trim().split(" "));
+  var code: { [key: number]: string } = {};
+  var res = new Array(outp.length)
+  for (var ii=0; ii<inp.length; ii++) {
+    var row = inp[ii]
+    code[1] = row.filter((x) => x.length === 2).join();
+    code[4] = row.filter((x) => x.length === 4).join();
+    code[7] = row.filter((x) => x.length === 3).join();
+    code[8] = row.filter((x) => x.length === 7).join();
+    var twofivesix = row.filter(
+      (x) =>
+        (x.includes(code[1].split("")[0]) &&
+          !x.includes(code[1].split("")[1])) ||
+        (!x.includes(code[1].split("")[0]) && x.includes(code[1].split("")[1]))
+    );
+    var bool256 = twofivesix.map((x) => x.includes(code[1].split("")[0]));
+    if (bool256.filter((x) => x).length > 1) {
+      bool256 = bool256.map((x) => !x);
+    }
+    code[2] = twofivesix[bool256.indexOf(true)];
+    var fivesix = twofivesix.filter((x) => !bool256[twofivesix.indexOf(x)]);
+    code[6] = fivesix.filter((x) => x.length === 6).join();
+    code[5] = fivesix.filter((x) => x !== code[6]).join();
+    var ninezero = row.filter((x) => x.length === 6 && x !== code[6]);
+    code[9] = ninezero
+      .filter((x) =>
+        code[4]
+          .split("")
+          .map((y) => x.includes(y)).every(x => x))
+      .join();
+    code[0] = ninezero.filter(x => x!==code[9]).join()
+    code[3] = row.filter(x => !(Object.entries(code).map(x => x[1]).includes(x))).join()
+
+    var edoc = {}
+    Object.entries(code).forEach(x => edoc[x[1].split("").sort().join("")] = x[0])
+    res[ii] = parseInt(outp[ii].map(x => edoc[x.split("").sort().join("")]).join(""))
+  }
+  return res.reduce((acc, cur) => acc + cur);
+}
+
+function day8(input: string[]) {
+  var outp = input[0]
+    .split("\n")
+    .map((x) => x.split("|")[1])
+    .map((x) => x.trim().split(" "));
+  var count: { [length: number]: number } = { 2: 1, 4: 4, 3: 7, 7: 8 }; // length then number corresponding
+  return outp
+    .map((x) => x.filter((y) => count[y.length]).length)
+    .reduce((acc, cur) => acc + cur);
+}
 
 function day7pt2(input: string[]) {
   var nums = input[0].split(",").map((x) => parseInt(x.trim()));
