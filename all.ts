@@ -42,13 +42,17 @@ function day9pt2(input: string[]) {
       }
     }
   }
-  var sols = [0, 0, 0]
+  var sols = [0, 0, 0];
   for (var l of lowpoints) {
     let [x, y] = l;
     var basin = [[x, y].toString()];
     var oldbasin = [];
+    var checked = [];
     while (oldbasin.length !== basin.length) {
+      // had to do string conversion in here because array.includes(array) is never true due to pass-by-reference
       oldbasin = cloneDeep(basin);
+      // var unchecked = basin.filter(x => !checked.includes(x))
+      // for (var pt of unchecked) {
       for (var pt of basin) {
         [x, y] = pt.split(",").map((x) => parseInt(x));
         let nearby = filterlist(x, y);
@@ -58,10 +62,13 @@ function day9pt2(input: string[]) {
           }
         }
       }
+      // checked.push(basin.filter(x => !checked.includes(x)))
+      // somehow the commented stuff is actually slower than just rechecking the same points over and over
+      // maybe because the comments require more looping through existing arrays?
     }
-    sols = sols.sort((a,b) => a-b)
-    if (basin.length > sols[0]){
-      sols[0] = basin.length
+    sols = sols.sort((a, b) => a - b);
+    if (basin.length > sols[0]) {
+      sols[0] = basin.length;
     }
   }
   return sols.reduce((acc, cur) => acc * cur);
