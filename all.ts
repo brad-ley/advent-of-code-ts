@@ -12,8 +12,90 @@ function inpfile(filein: string) {
 var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day8pt2(input).toString());
+console.log("Solution is: " + day9pt2(input).toString());
 console.timeEnd("Run time");
+
+function day9pt2(input: string[]) {
+  var map = input[0]
+    .split("\n")
+    .map((x) => x.split("").map((y) => parseInt(y.trim())));
+  var lowpoints = [];
+  function filterlist(x: number, y: number) {
+    return [
+      [x - 1, y],
+      [x + 1, y],
+      [x, y - 1],
+      [x, y + 1],
+    ].filter(
+      (el) =>
+        el[0] >= 0 && el[0] < map.length && el[1] >= 0 && el[1] < map[0].length
+    );
+  }
+  for (var ii = 0; ii < map.length; ii++) {
+    for (var kk = 0; kk < map[ii].length; kk++) {
+      var checklist = filterlist(ii, kk);
+      if (
+        checklist.filter((x) => map[x[0]][x[1]] > map[ii][kk]).length ===
+        checklist.length
+      ) {
+        lowpoints.push([ii, kk]);
+      }
+    }
+  }
+  var sols = [0, 0, 0]
+  for (var l of lowpoints) {
+    let [x, y] = l;
+    var basin = [[x, y].toString()];
+    var oldbasin = [];
+    while (oldbasin.length !== basin.length) {
+      oldbasin = cloneDeep(basin);
+      for (var pt of basin) {
+        [x, y] = pt.split(",").map((x) => parseInt(x));
+        let nearby = filterlist(x, y);
+        for (var el of nearby) {
+          if (map[el[0]][el[1]] < 9 && !basin.includes(el.toString())) {
+            basin.push(el.toString());
+          }
+        }
+      }
+    }
+    sols = sols.sort((a,b) => a-b)
+    if (basin.length > sols[0]){
+      sols[0] = basin.length
+    }
+  }
+  return sols.reduce((acc, cur) => acc * cur);
+}
+
+function day9(input: string[]) {
+  var map = input[0]
+    .split("\n")
+    .map((x) => x.split("").map((y) => parseInt(y.trim())));
+  var c = 0;
+  function filterlist(x: number, y: number) {
+    return [
+      [x - 1, y],
+      [x + 1, y],
+      [x, y - 1],
+      [x, y + 1],
+    ].filter(
+      (el) =>
+        el[0] >= 0 && el[0] < map.length && el[1] >= 0 && el[1] < map[0].length
+    );
+  }
+  for (var ii = 0; ii < map.length; ii++) {
+    for (var kk = 0; kk < map[ii].length; kk++) {
+      var checklist = filterlist(ii, kk);
+      if (
+        checklist.filter((x) => map[x[0]][x[1]] > map[ii][kk]).length ===
+        checklist.length
+      ) {
+        c += 1 + map[ii][kk];
+      }
+    }
+  }
+  return c;
+}
 
 function day8pt2(input: string[]) {
   var inp = input[0]
@@ -61,7 +143,7 @@ function day8pt2(input: string[]) {
           .every((x) => x)
       )
       .join();
-    // 0 is the other one 
+    // 0 is the other one
     code[0] = ninezero.filter((x) => x !== code[9]).join();
     // 3 is now all that is left
     code[3] = row
