@@ -8,12 +8,87 @@ function inpfile(filein: string) {
   return readFileSync(filein, "utf8").trim().split("\n\n");
 }
 
-// var input = inpfile("./other/test.txt");
-var input = inpfile("./other/advent.txt");
+var input = inpfile("./other/test.txt");
+// var input = inpfile("./other/advent.txt");
 
 console.time("Run time");
-console.log("Solution is: " + day9pt2(input).toString());
+console.log("Solution is: " + day11(input).toString());
 console.timeEnd("Run time");
+
+function day11(input: string[]) {}
+
+function day10pt2(input: string[]) {
+  let lines = input[0].split("\n");
+  let openers = ["[", "{", "(", "<"];
+  let closers = ["]", "}", ")", ">"];
+  let score: { [key: string]: number } = {
+    ")": 3,
+    "]": 57,
+    "}": 1197,
+    ">": 25137,
+  };
+  let closingscore: { [key: string]: number } = {
+    ")": 1,
+    "]": 2,
+    "}": 3,
+    ">": 4,
+  };
+  function findpair(line: string[]) {
+    for (var i = 1; i < line.length; i++) {
+      if (
+        closers.includes(line[i]) &&
+        closers.indexOf(line[i]) === openers.indexOf(line[i - 1])
+      ) {
+        line.splice(i - 1, 2);
+        return findpair(line);
+      }
+    }
+    if (!Boolean(score[line.filter((x) => closers.includes(x))[0]])) {
+      return line
+        .reverse()
+        .map((x) => closingscore[closers[openers.indexOf(x)]])
+        .reduce((acc, cur) => 5 * acc + cur);
+    } else {
+      return 0;
+    }
+  }
+  var out = lines
+    .map((el) => findpair(el.split("")))
+    .filter((x) => x)
+    .sort((a, b) => a - b);
+  return out[Math.floor(out.length / 2)];
+}
+
+function day10(input: string[]) {
+  let lines = input[0].split("\n");
+  let openers = ["[", "{", "(", "<"];
+  let closers = ["]", "}", ")", ">"];
+  let score: { [key: string]: number } = {
+    ")": 3,
+    "]": 57,
+    "}": 1197,
+    ">": 25137,
+  };
+  function findpair(line: string[]) {
+    for (var i = 1; i < line.length; i++) {
+      if (
+        closers.includes(line[i]) &&
+        closers.indexOf(line[i]) === openers.indexOf(line[i - 1])
+      ) {
+        line.splice(i - 1, 2);
+        return findpair(line);
+      }
+    }
+    if (score[line.filter((x) => closers.includes(x))[0]]) {
+      return score[line.filter((x) => closers.includes(x))[0]];
+    } else {
+      return 0;
+    }
+  }
+  var tot = 0;
+  lines.forEach((el) => (tot += findpair(el.split(""))));
+  return tot;
+}
 
 function day9pt2(input: string[]) {
   var map = input[0]
